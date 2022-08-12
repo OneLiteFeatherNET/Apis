@@ -10,8 +10,8 @@ import java.nio.file.Path;
 
 public class DungeonGeneratorImpl extends BaseGenerator {
 
-    public DungeonGeneratorImpl(Instance instance, Path filePath) {
-        super(instance, filePath);
+    public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
+        super(name, instance, filePath);
         LOGGER = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
     }
 

@@ -35,4 +35,6 @@ public interface DungeonGenerator {
     default void save() {
         throw new RuntimeException("Not implemented yet");
     }
+
+    @NotNull String getName();
 }
