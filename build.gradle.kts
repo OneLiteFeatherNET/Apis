@@ -1,11 +1,14 @@
+import org.sonarqube.gradle.SonarQubeTask
+
 plugins {
     java
     alias(libs.plugins.sonarqube)
+    jacoco
 }
 
-group = "org.example" // TODO: Change me
-val baseVersion = "0.0.1-SNAPSHOT" // TODO: Change me
-val sonarKey = "insert-sonar-key" // TODO: Change me
+group = "net.theevilreaper.apis"
+val baseVersion = "1.0.-SNAPSHOT"
+val sonarKey = "dungeon_projects_apis_AYKTgGApdAa6ziWsmL8y"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -31,12 +34,25 @@ tasks {
         options.release.set(17)
     }
 
+    jacocoTestReport {
+        dependsOn(rootProject.tasks.test)
+        reports {
+            xml.required.set(true)
+        }
+    }
+
     test {
+        finalizedBy(rootProject.tasks.jacocoTestReport)
         useJUnitPlatform()
         testLogging {
             events("passed", "skipped", "failed")
         }
     }
+
+    getByName<SonarQubeTask>("sonarqube") {
+        dependsOn(rootProject.tasks.test)
+    }
+
 }
 
 sonarqube {
