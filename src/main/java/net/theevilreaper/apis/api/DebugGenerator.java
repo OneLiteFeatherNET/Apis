@@ -17,8 +17,8 @@ public class DebugGenerator extends BaseGenerator {
     private static final Block SHOP_ROOM = Block.YELLOW_CONCRETE;
     private static final Block ITEM_ROOM = Block.GREEN_CONCRETE;
 
-    public DebugGenerator(Instance instance, Path filePath) {
-        super(instance, filePath);
+    public DebugGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
+        super(name, instance, filePath);
         LOGGER = LoggerFactory.getLogger(DebugGenerator.class);
     }
 

@@ -25,7 +25,10 @@ public abstract class BaseGenerator implements DungeonGenerator {
 
     protected List<Object> loadedRooms;
 
-    protected BaseGenerator(Instance instance, Path filePath) {
+    private final String name;
+
+    protected BaseGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
+        this.name = name;
         this.instance = instance;
         this.filePath = filePath;
         this.loadedRooms = new ArrayList<>();
@@ -41,5 +44,11 @@ public abstract class BaseGenerator implements DungeonGenerator {
     @Override
     public void generate(@NotNull Player player) {
         this.generate(player.getPosition().asVec());
+    }
+
+    @NotNull
+    @Override
+    public String getName() {
+        return name;
     }
 }
