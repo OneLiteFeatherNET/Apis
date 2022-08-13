@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
+import net.theevilreaper.apis.api.data.LoadedRoom;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,11 +31,15 @@ public interface DungeonGenerator {
      *
      * @param player the player to generate the dungeon for.
      */
-    void generate(@NotNull Player player);
+    default void generate(@NotNull Player player) {
+        this.generate(player.getPosition().asVec());
+    }
 
     default void save() {
         throw new RuntimeException("Not implemented yet");
     }
 
     @NotNull String getName();
+
+    @NotNull LoadedRoom[][] getFloorPlan();
 }
