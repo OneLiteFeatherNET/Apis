@@ -1,9 +1,9 @@
 package net.theevilreaper.apis.api;
 
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
+import net.theevilreaper.apis.api.data.LoadedRoom;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +19,7 @@ public class DebugGenerator extends BaseGenerator {
 
     public DebugGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
         super(name, instance, filePath);
-        LOGGER = LoggerFactory.getLogger(DebugGenerator.class);
-    }
-
-    @Override
-    public void loadData() {
-
+        generatorLogger = LoggerFactory.getLogger(DebugGenerator.class);
     }
 
     @Override
@@ -32,13 +27,8 @@ public class DebugGenerator extends BaseGenerator {
 
     }
 
-    @Override
-    public void generate(@NotNull Player player) {
-
-    }
-
-    private Block getBlock(@NotNull Object loadedRoom) {
-        /*if (loadedRoom.isStart()) {
+    private Block getBlock(@NotNull LoadedRoom loadedRoom) {
+        if (loadedRoom.isStart()) {
             return START_ROOM;
         }
 
@@ -52,7 +42,7 @@ public class DebugGenerator extends BaseGenerator {
 
         if (loadedRoom.isItem()) {
             return ITEM_ROOM;
-        }**/
+        }
         return NORMAL_ROOM;
     }
 }
