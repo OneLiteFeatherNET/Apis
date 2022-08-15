@@ -18,7 +18,9 @@ public interface DungeonGenerator {
 
     int DEFAULT_ROOM_SIZE = 8;
 
-    int DEFAULT_CHUNK_SCALE = 4;
+    int DEFAULT_CHUNK_SCALE = 2;
+
+    void loadData();
 
     /**
      * Generates the dungeon to the given position.
@@ -39,6 +41,8 @@ public interface DungeonGenerator {
     default void save() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
+
+    void setRoomScale(int scale);
 
     void setInstance(@NotNull Instance instance);
 
