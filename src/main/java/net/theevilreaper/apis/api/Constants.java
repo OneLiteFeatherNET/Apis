@@ -1,6 +1,13 @@
 package net.theevilreaper.apis.api;
 
-public class Constants {
+/**
+ * @author Joltra
+ * @version 1.0.0
+ * @since 1.0.0
+ */
+public final class Constants {
+
+    private Constants() {}
 
     public static final String ROOM_ID = "_Room__id";
 
