@@ -33,6 +33,8 @@ public abstract class BaseGenerator implements DungeonGenerator {
 
     protected List<LoadedRoom> loadedRooms;
 
+    protected int roomScale;
+
     private final String name;
 
     protected BaseGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
@@ -40,9 +42,9 @@ public abstract class BaseGenerator implements DungeonGenerator {
         this.instance = instance;
         this.filePath = filePath;
         this.loadedRooms = new ArrayList<>();
-        this.loadData();
     }
 
+    @Override
     public void loadData() {
         if (!Files.exists(filePath)) {
             throw new NullPointerException("The given path does not exist");
@@ -115,6 +117,14 @@ public abstract class BaseGenerator implements DungeonGenerator {
     @Override
     public void setInstance(@NotNull Instance instance) {
         this.instance = instance;
+    }
+
+    @Override
+    public void setRoomScale(int roomScale) {
+        if (roomScale > DEFAULT_CHUNK_SCALE) {
+            throw new IllegalArgumentException("The given scale can not be higher than: " + DEFAULT_CHUNK_SCALE);
+        }
+        this.roomScale = roomScale;
     }
 
     @NotNull
