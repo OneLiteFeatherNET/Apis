@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
+import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.data.LoadedRoom;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,8 +37,10 @@ public interface DungeonGenerator {
     }
 
     default void save() {
-        throw new RuntimeException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
+
+    void setInstance(@NotNull Instance instance);
 
     @NotNull String getName();
 
