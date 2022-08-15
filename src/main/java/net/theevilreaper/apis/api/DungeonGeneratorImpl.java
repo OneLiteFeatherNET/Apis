@@ -16,11 +16,11 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
-        throw new RuntimeException("Not implemented yet");
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override
     public void save() {
-        super.save();
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }
