@@ -4,10 +4,11 @@ plugins {
     java
     alias(libs.plugins.sonarqube)
     jacoco
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "net.theevilreaper.apis"
-val baseVersion = "1.0.-SNAPSHOT"
+val baseVersion = "1.0.0-SNAPSHOT"
 val sonarKey = "dungeon_projects_apis_AYKTgGApdAa6ziWsmL8y"
 
 java {
@@ -58,6 +59,16 @@ dependencies {
 }
 
 tasks {
+    processResources {
+        filesMatching("extension.json") {
+            expand(project.properties)
+        }
+    }
+
+    jar {
+        dependsOn("shadowJar")
+    }
+
     compileJava {
         options.encoding = "UTF-8"
         options.release.set(17)
@@ -81,7 +92,6 @@ tasks {
     getByName<SonarQubeTask>("sonarqube") {
         dependsOn(rootProject.tasks.test)
     }
-
 }
 
 sonarqube {
