@@ -21,7 +21,7 @@ class DungeonGeneratorTest {
 
     @Test
     void testChunkScale() {
-        assertEquals(4, DungeonGenerator.DEFAULT_CHUNK_SCALE);
+        assertEquals(2, DungeonGenerator.DEFAULT_CHUNK_SCALE);
     }
 
     @Test
