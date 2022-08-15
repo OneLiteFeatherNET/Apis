@@ -24,9 +24,8 @@ public abstract class BaseGenerator implements DungeonGenerator {
 
     protected static Logger generatorLogger = LoggerFactory.getLogger(BaseGenerator.class);
 
-    protected final Instance instance;
-
     protected final Path filePath;
+    protected Instance instance;
 
     protected LoadedRoom[][] floorPlan;
 
@@ -41,6 +40,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
         this.instance = instance;
         this.filePath = filePath;
         this.loadedRooms = new ArrayList<>();
+        this.loadData();
     }
 
     public void loadData() {
@@ -108,8 +108,13 @@ public abstract class BaseGenerator implements DungeonGenerator {
                 this.loadedRooms.add(room);
             }
         } catch (IOException exception) {
-
+            exception.printStackTrace();
         }
+    }
+
+    @Override
+    public void setInstance(@NotNull Instance instance) {
+        this.instance = instance;
     }
 
     @NotNull
