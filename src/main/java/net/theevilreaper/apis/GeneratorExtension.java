@@ -6,11 +6,11 @@ public class GeneratorExtension extends Extension {
 
     @Override
     public void initialize() {
-
+        // Nothing to do here
     }
 
     @Override
     public void terminate() {
-
+        // Nothing to do here
     }
 }
