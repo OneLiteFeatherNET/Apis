@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.data.DoorFace;
-import net.theevilreaper.apis.api.data.LoadedRoom;
+import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -27,23 +27,43 @@ public abstract class BaseGenerator implements DungeonGenerator {
     protected final Path filePath;
     protected Instance instance;
 
-    protected LoadedRoom[][] floorPlan;
+    protected RoomData[][] floorPlan;
 
-    protected LoadedRoom startRoom;
+    protected RoomData startRoom;
 
-    protected List<LoadedRoom> loadedRooms;
+    protected List<RoomData> roomData;
 
     protected int roomScale;
 
     private final String name;
 
+    /**
+     *
+     * @param name the name from the generator
+     * @param instance the instance for the generator
+     * @param filePath the path to the file
+     */
     protected BaseGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
         this.name = name;
         this.instance = instance;
         this.filePath = filePath;
-        this.loadedRooms = new ArrayList<>();
+        this.roomData = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param name the name from the generator
+     * @param filePath the path to the file
+     */
+    protected BaseGenerator(@NotNull String name, @NotNull Path filePath) {
+        this.name = name;
+        this.filePath = filePath;
+        this.roomData = new ArrayList<>();
+    }
+
+    /**
+     * Load a dungeon from a given file.
+     */
     @Override
     public void loadData() {
         if (!Files.exists(filePath)) {
@@ -65,7 +85,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
 
             var width = entry.get("width").getAsInt();
 
-            this.floorPlan = new LoadedRoom[height][width];
+            this.floorPlan = new RoomData[height][width];
 
             if (!entry.has("floor")) {
                 throw new NullPointerException("The floor attribute is missing");
@@ -100,25 +120,33 @@ public abstract class BaseGenerator implements DungeonGenerator {
                     counter++;
                 }
 
-                var room = new LoadedRoom(x ,y, roomType, doors);
+                var room = new RoomData(x ,y, roomType, doors);
 
                 if (startRoom == null) {
                     startRoom = room;
                 }
 
                 this.floorPlan[y][x] = room;
-                this.loadedRooms.add(room);
+                this.roomData.add(room);
             }
         } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
 
+    /**
+     * Set the instance where the generator should generate the floor.
+     * @param instance the instance to set
+     */
     @Override
     public void setInstance(@NotNull Instance instance) {
         this.instance = instance;
     }
 
+    /**
+     * Set the new roomScale for the generation.
+     * @param roomScale the scale to set
+     */
     @Override
     public void setRoomScale(int roomScale) {
         if (roomScale > DEFAULT_CHUNK_SCALE) {
@@ -127,15 +155,23 @@ public abstract class BaseGenerator implements DungeonGenerator {
         this.roomScale = roomScale;
     }
 
+    /**
+     * Returns the name for the generator.
+     * @return the given name
+     */
     @NotNull
     @Override
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns the array which includes all {@link RoomData} from the plan.
+     * @return the given array
+     */
     @NotNull
     @Override
-    public LoadedRoom[][] getFloorPlan() {
+    public RoomData[][] getFloorPlan() {
         return floorPlan;
     }
 }
