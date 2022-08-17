@@ -14,6 +14,11 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
     }
 
+    public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath) {
+        super(name, filePath);
+        generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
+    }
+
     @Override
     public void generate(@NotNull Point startPos) {
         throw new UnsupportedOperationException("Not implemented yet");
