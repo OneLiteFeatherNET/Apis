@@ -6,7 +6,7 @@ import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
-import net.theevilreaper.apis.api.data.LoadedRoom;
+import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
@@ -30,24 +30,24 @@ public class DebugGenerator extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
-        if (!loadedRooms.isEmpty()) {
+        if (!roomData.isEmpty()) {
             int oldStartRoomX = -1;
             int oldStartRoomZ = -1;
             Pos playerPosition = Pos.fromPoint(startPos);
-            System.out.println("New Start Room (" + playerPosition.chunkX() + ", " + playerPosition.chunkZ() + ")");
+            generatorLogger.info("New Start Room ({}, {})", playerPosition.chunkX(), playerPosition.chunkZ());
             Chunk startChunk = instance.getChunk(playerPosition.chunkX(), playerPosition.chunkZ());
             buildRoom(startChunk.getChunkX(), startChunk.getChunkZ(), START_ROOM, playerPosition.blockY());
 
-            for (LoadedRoom room : loadedRooms) {
+            for (RoomData room : roomData) {
                 if (room.type().equals(RoomType.START_ROOM)) {
                     oldStartRoomX = room.x();
                     oldStartRoomZ = room.z();
                 }
             }
-            System.out.println("Old Start Room (" + oldStartRoomX + ", " + oldStartRoomZ + ")");
 
+            generatorLogger.info("Old Start Room ({}, {})", oldStartRoomX, oldStartRoomZ);
 
-            for (LoadedRoom room : loadedRooms) {
+            for (RoomData room : roomData) {
                 if (room.type() != RoomType.START_ROOM) {
                     int chunkX = room.x() - (oldStartRoomX - startChunk.getChunkX());
                     chunkX +=  (chunkX - startChunk.getChunkX()) * (ROOM_SIZE - 1);
@@ -59,9 +59,8 @@ public class DebugGenerator extends BaseGenerator {
 
 
                     buildRoom(chunkX, chunkZ, getBlock(room), playerPosition.blockY());
-
-                    System.out.println("chunkX is " +   chunkX);
-                    System.out.println("chunkZ is " + chunkZ);
+                    generatorLogger.info("ChunkX is {}", chunkX);
+                    generatorLogger.info("ChunkZ is {}", chunkZ);
                 }
             }
         }
@@ -70,8 +69,7 @@ public class DebugGenerator extends BaseGenerator {
 
     private void buildRoom(int chunkX, int chunkZ, Block block, int y)
     {
-        System.out.println("chunkX: " + chunkX + " chunkZ: " + chunkZ);
-        ChunkBatch chunkBatch;
+        generatorLogger.info("chunkX: {}, chunkZ: {}", chunkX , chunkZ);
         Chunk currentChunk;
 
         for (int xOffset = 0; xOffset <= (ROOM_SIZE - 1); xOffset++) {
@@ -81,28 +79,26 @@ public class DebugGenerator extends BaseGenerator {
 
                 if (currentChunk == null || !currentChunk.isLoaded()) {
                     instance.loadChunk(chunkX + xOffset, chunkZ + zOffset).thenAccept(chunk -> {
-                        var batch  = new ChunkBatch();
-                        for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
-                            for (int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
-                                batch.setBlock(x, y, z, block);
-                            }
-                        }
-                        batch.apply(this.instance, chunk, null);
+                        this.createChunkBatch(chunk, block, y);
                     }).join();
                 } else {
-                    chunkBatch = new ChunkBatch();
-                    for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
-                        for (int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
-                            chunkBatch.setBlock(x, y, z, block);
-                        }
-                    }
-                    chunkBatch.apply(this.instance, currentChunk, null);
+                    this.createChunkBatch(currentChunk, block, y);
                 }
             }
         }
     }
 
-    private Block getBlock(@NotNull LoadedRoom loadedRoom) {
+    private void createChunkBatch(@NotNull Chunk chunk, @NotNull Block block, int y) {
+        var batch  = new ChunkBatch();
+        for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
+            for (int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
+                batch.setBlock(x, y, z, block);
+            }
+        }
+        batch.apply(this.instance, chunk, null);
+    }
+
+    private Block getBlock(@NotNull RoomData loadedRoom) {
         if (loadedRoom.isStart()) {
             return START_ROOM;
         }
