@@ -107,7 +107,7 @@ public class DebugGenerator extends BaseGenerator {
             return START_ROOM;
         }
 
-        if (loadedRoom.isBoos()) {
+        if (loadedRoom.isBoss()) {
             return BOSS_ROOM;
         }
 

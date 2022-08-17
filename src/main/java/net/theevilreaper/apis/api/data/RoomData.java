@@ -16,7 +16,7 @@ public record RoomData(int x, int z, RoomType type, DoorFace... doors) {
         return this.type == RoomType.SHOP_ROOM;
     }
 
-    public boolean isBoos() {
+    public boolean isBoss() {
         return this.type == RoomType.BOSS_ROOM;
     }
 
