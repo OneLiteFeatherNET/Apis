@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
-import net.theevilreaper.apis.api.data.LoadedRoom;
+import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -48,5 +48,5 @@ public interface DungeonGenerator {
 
     @NotNull String getName();
 
-    @NotNull LoadedRoom[][] getFloorPlan();
+    @NotNull RoomData[][] getFloorPlan();
 }
