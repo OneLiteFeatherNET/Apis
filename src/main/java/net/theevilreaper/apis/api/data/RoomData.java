@@ -6,7 +6,7 @@ package net.theevilreaper.apis.api.data;
  * @since 1.0.0
  **/
 //TODO: Rework the class
-public record LoadedRoom(int x, int z, RoomType type, DoorFace... doors) {
+public record RoomData(int x, int z, RoomType type, DoorFace... doors) {
 
     public boolean isStart() {
         return this.type == RoomType.START_ROOM;
