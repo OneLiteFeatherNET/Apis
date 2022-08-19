@@ -1,27 +1,133 @@
 package net.theevilreaper.apis.api;
 
 import net.minestom.server.coordinate.Point;
+import net.minestom.server.coordinate.Pos;
+import net.minestom.server.coordinate.Vec;
+import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
+import net.theevilreaper.apis.api.data.RoomDTO;
+import net.theevilreaper.apis.api.data.RoomData;
+import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
+import net.theevilreaper.apis.schematic.Scaffolding;
+import net.theevilreaper.apis.schematic.model.Schematic;
 import org.jetbrains.annotations.NotNull;
+import org.jglrxavpok.hephaistos.nbt.NBTException;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DungeonGeneratorImpl extends BaseGenerator {
 
-    public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
+    private final RoomSchematicLoader roomSchematicLoader;
+    private final List<RoomDTO> dtos = new ArrayList<>();
+
+    private static final int ROOM_SIZE = 4;
+
+    private final Schematic schematic = new Schematic();
+
+    public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, instance, filePath);
+        this.roomSchematicLoader = roomSchematicLoader;
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
     }
 
-    public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath) {
+    public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, filePath);
+        this.roomSchematicLoader = roomSchematicLoader;
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
     }
 
     @Override
+    public void loadData() {
+        super.loadData();
+        var regions = this.roomSchematicLoader.findRegions();
+        var mapped = this.roomSchematicLoader.mapSchematicsByRegionsFiles(regions);
+        for (RoomData roomDat : roomData) {
+            try {
+                dtos.add(this.roomSchematicLoader.findByRoomData(roomDat, mapped));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    @Override
     public void generate(@NotNull Point startPos) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        var endX = startPos.blockX() * DEFAULT_CHUNK_SCALE;
+        var endZ = startPos.blockZ() * DEFAULT_CHUNK_SCALE;
+        var endPos = new Vec(endX, startPos.blockY(), endZ);
+
+        if (!dtos.isEmpty()) {
+            int oldStartRoomX = -1;
+            int oldStartRoomZ = -1;
+            Pos playerPosition = Pos.fromPoint(startPos);
+            Chunk startChunk = instance.getChunk(playerPosition.chunkX(), playerPosition.chunkZ());
+            generatorLogger.info("New Start Room ({}, {})", startPos.chunkX(), startPos.chunkZ());
+            for (RoomDTO room : dtos) {
+                if (room.getRoomData().type().equals(RoomType.START_ROOM)) {
+                    System.out.println("SchematicPath is " + room.getSchematicPath());
+                    buildRoom(endPos, room.getSchematicPath());
+                    oldStartRoomX = room.getRoomData().x();
+                    oldStartRoomZ = room.getRoomData().z();
+                }
+            }
+            for (RoomDTO dto : dtos) {
+                if (dto.getRoomData().type() != RoomType.START_ROOM) {
+                    int chunkX = dto.getRoomData().x() - (oldStartRoomX - startChunk.getChunkX());
+                    chunkX +=  (chunkX - startChunk.getChunkX()) * (ROOM_SIZE - 1);
+                    //chunkX *= (ROOM_SIZE - 1);
+
+                    int chunkZ = dto.getRoomData().z() - (oldStartRoomZ - startChunk.getChunkZ());
+                    chunkZ += (chunkZ - startChunk.getChunkZ()) * (ROOM_SIZE - 1);
+                    //chunkZ *= (ROOM_SIZE - 1);
+
+
+                    buildRoom(new Vec(startPos.blockX() + (16 * chunkX), startPos.blockY(), startPos.blockX() + (16 * chunkZ)), dto.getSchematicPath());
+                    generatorLogger.info("ChunkX is {}", chunkX);
+                    generatorLogger.info("ChunkZ is {}", chunkZ);
+
+
+                    generatorLogger.info("PosX is {}", startPos.blockX() + (16 * chunkX));
+                    generatorLogger.info("PosZ is {}", startPos.blockX() + (16 * chunkZ));
+                }
+            }
+        }
+    }
+
+    private void buildRoom(Point startPos, Path schematic) {
+        // generatorLogger.info("chunkX: {}, chunkZ: {}", chunkX , chunkZ);
+        try {
+            System.out.println("StartPos is " + startPos);
+            System.out.println(schematic.toString());
+            var schematicSchem = Scaffolding.fromPath(schematic);
+            schematicSchem.thenAccept(yolo -> {
+                yolo.build(instance, startPos).thenRun(() ->
+                        generatorLogger.info("Schematic successfully placed")).join();
+            });
+            System.out.println("Vla ende lul");
+        } catch (IOException | NBTException e) {
+            throw new RuntimeException(e);
+        }
+        //Chunk currentChunk;
+
+        /*for (int xOffset = 0; xOffset <= (ROOM_SIZE - 1); xOffset++) {
+            for (int zOffset = 0; zOffset <= (ROOM_SIZE - 1); zOffset++) {
+                //To add extra values (it just moves the whole dungeon)
+                currentChunk = instance.getChunk(chunkX + xOffset, chunkZ + zOffset);
+
+                if (currentChunk == null || !currentChunk.isLoaded()) {
+                    instance.loadChunk(chunkX + xOffset, chunkZ + zOffset).thenAccept(chunk -> {
+                        this.createChunkBatch(chunk, block, y);
+                    }).join();
+                } else {
+                    this.createChunkBatch(currentChunk, block, y);
+                }
+            }
+        }*/
     }
 
     @Override
