@@ -27,8 +27,6 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     private static final int ROOM_SIZE = 4;
 
-    private final Schematic schematic = new Schematic();
-
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, instance, filePath);
         this.roomSchematicLoader = roomSchematicLoader;
@@ -69,7 +67,6 @@ public class DungeonGeneratorImpl extends BaseGenerator {
             generatorLogger.info("New Start Room ({}, {})", startPos.chunkX(), startPos.chunkZ());
             for (RoomDTO room : dtos) {
                 if (room.getRoomData().type().equals(RoomType.START_ROOM)) {
-                    System.out.println("SchematicPath is " + room.getSchematicPath());
                     buildRoom(endPos, room.getSchematicPath());
                     oldStartRoomX = room.getRoomData().x();
                     oldStartRoomZ = room.getRoomData().z();
@@ -85,12 +82,9 @@ public class DungeonGeneratorImpl extends BaseGenerator {
                     chunkZ += (chunkZ - startChunk.getChunkZ()) * (ROOM_SIZE - 1);
                     //chunkZ *= (ROOM_SIZE - 1);
 
-
                     buildRoom(new Vec(startPos.blockX() + (16 * chunkX), startPos.blockY(), startPos.blockX() + (16 * chunkZ)), dto.getSchematicPath());
                     generatorLogger.info("ChunkX is {}", chunkX);
                     generatorLogger.info("ChunkZ is {}", chunkZ);
-
-
                     generatorLogger.info("PosX is {}", startPos.blockX() + (16 * chunkX));
                     generatorLogger.info("PosZ is {}", startPos.blockX() + (16 * chunkZ));
                 }
@@ -99,35 +93,15 @@ public class DungeonGeneratorImpl extends BaseGenerator {
     }
 
     private void buildRoom(Point startPos, Path schematic) {
-        // generatorLogger.info("chunkX: {}, chunkZ: {}", chunkX , chunkZ);
         try {
-            System.out.println("StartPos is " + startPos);
-            System.out.println(schematic.toString());
             var schematicSchem = Scaffolding.fromPath(schematic);
             schematicSchem.thenAccept(yolo -> {
                 yolo.build(instance, startPos).thenRun(() ->
                         generatorLogger.info("Schematic successfully placed")).join();
             });
-            System.out.println("Vla ende lul");
         } catch (IOException | NBTException e) {
             throw new RuntimeException(e);
         }
-        //Chunk currentChunk;
-
-        /*for (int xOffset = 0; xOffset <= (ROOM_SIZE - 1); xOffset++) {
-            for (int zOffset = 0; zOffset <= (ROOM_SIZE - 1); zOffset++) {
-                //To add extra values (it just moves the whole dungeon)
-                currentChunk = instance.getChunk(chunkX + xOffset, chunkZ + zOffset);
-
-                if (currentChunk == null || !currentChunk.isLoaded()) {
-                    instance.loadChunk(chunkX + xOffset, chunkZ + zOffset).thenAccept(chunk -> {
-                        this.createChunkBatch(chunk, block, y);
-                    }).join();
-                } else {
-                    this.createChunkBatch(currentChunk, block, y);
-                }
-            }
-        }*/
     }
 
     @Override
