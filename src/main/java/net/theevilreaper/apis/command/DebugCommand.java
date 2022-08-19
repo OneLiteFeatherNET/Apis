@@ -1,15 +1,28 @@
 package net.theevilreaper.apis.command;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
+import net.minestom.server.command.builder.arguments.Argument;
+import net.minestom.server.command.builder.arguments.ArgumentEnum;
+import net.minestom.server.command.builder.arguments.ArgumentLiteral;
+import net.minestom.server.command.builder.arguments.ArgumentType;
+import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
-import net.minestom.server.instance.Instance;
-import net.theevilreaper.apis.api.DebugGenerator;
 import net.theevilreaper.apis.api.DungeonGenerator;
+import net.theevilreaper.apis.api.DungeonGeneratorImpl;
+import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.util.List;
 
 /**
  * @author theEvilReaper
@@ -18,17 +31,61 @@ import java.nio.file.Path;
  **/
 public class DebugCommand extends Command {
 
-    private final DungeonGenerator generate;
+    private final Argument<String> schematicArgument;
 
-    public DebugCommand(@NotNull Instance instance, @NotNull Path path) {
+    private final ArgumentEnum<RoomType> roomArgument;
+    private final ArgumentLiteral gen;
+
+    private final DungeonGenerator generate;
+    private final RoomSchematicLoader roomSchematicLoader;
+    private final List<Path> schematics;
+
+    public DebugCommand(@NotNull Path floorPlanPath, @NotNull Path path) {
         super("test", "t");
-        this.generate = new DebugGenerator("Debug", instance, path);
-        addSyntax(this::onGenerate);
+        this.roomSchematicLoader = new RoomSchematicLoader(path);
+        this.schematics = this.roomSchematicLoader.findSchematics();
+        this.gen = ArgumentType.Literal("gen");
+        this.generate = new DungeonGeneratorImpl("Debug", floorPlanPath, roomSchematicLoader);
+        this.schematicArgument = ArgumentType.String("schematic").setSuggestionCallback((sender, context, suggestion) -> {
+            for (Path schematic : schematics) {
+                suggestion.addEntry(new SuggestionEntry(schematic.getFileName().toString(), Component.text("Schematic", NamedTextColor.WHITE)));
+            }
+        });
+        this.roomArgument = new ArgumentEnum<>("type", RoomType.class);
+
+        addSyntax(this::gen, this.gen);
+        addSyntax(this::onRegion, schematicArgument, roomArgument);
     }
 
-    private void onGenerate(@NotNull CommandSender sender, @NotNull CommandContext context) {
-        var player = (Player) sender;
-        this.generate.setInstance(player.getInstance());
-        this.generate.generate(player);
+    private void gen(@NotNull CommandSender commandSender, @NotNull CommandContext commandContext) {
+        if (commandSender instanceof Player player) {
+            this.generate.loadData();
+            this.generate.setInstance(player.getInstance());
+            this.generate.generate(player);
+        }
+    }
+
+    // /t <schemac> <type> -> name.schema | name.json + 1 Atrr
+    private void onRegion(@NotNull CommandSender sender, @NotNull CommandContext context) {
+        var schematic = context.get(schematicArgument);
+        var type = context.get(roomArgument);
+        Path schematicFinalPath = null;
+        for (Path schematicPath : schematics) {
+            if (schematicPath.getFileName().toString().equalsIgnoreCase(schematic)) {
+                schematicFinalPath = schematicPath;
+            }
+        }
+        if (schematicFinalPath != null) {
+            Path parent = schematicFinalPath.toAbsolutePath().getParent();
+            Path regionFile = parent.resolve(schematicFinalPath.getFileName() + ".json");
+            try {
+                Files.createFile(regionFile);
+                UserDefinedFileAttributeView view = Files.getFileAttributeView(regionFile, UserDefinedFileAttributeView.class);
+                view.write("dungeon.roomtype", StandardCharsets.UTF_8.encode(String.valueOf(type.getId())));
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
