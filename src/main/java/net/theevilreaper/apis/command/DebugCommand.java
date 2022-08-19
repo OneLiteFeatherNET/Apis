@@ -2,6 +2,7 @@ package net.theevilreaper.apis.command;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.command.CommandSender;
 import net.minestom.server.command.builder.Command;
 import net.minestom.server.command.builder.CommandContext;
@@ -10,7 +11,9 @@ import net.minestom.server.command.builder.arguments.ArgumentEnum;
 import net.minestom.server.command.builder.arguments.ArgumentLiteral;
 import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
+import net.minestom.server.entity.GameMode;
 import net.minestom.server.entity.Player;
+import net.minestom.server.instance.InstanceContainer;
 import net.theevilreaper.apis.api.DungeonGenerator;
 import net.theevilreaper.apis.api.DungeonGeneratorImpl;
 import net.theevilreaper.apis.api.data.RoomType;
@@ -60,7 +63,10 @@ public class DebugCommand extends Command {
     private void gen(@NotNull CommandSender commandSender, @NotNull CommandContext commandContext) {
         if (commandSender instanceof Player player) {
             this.generate.loadData();
-            this.generate.setInstance(player.getInstance());
+            InstanceContainer container = MinecraftServer.getInstanceManager().createInstanceContainer();
+            this.generate.setInstance(container);
+            player.setInstance(container);
+            player.setGameMode(GameMode.SPECTATOR);
             this.generate.generate(player);
         }
     }
