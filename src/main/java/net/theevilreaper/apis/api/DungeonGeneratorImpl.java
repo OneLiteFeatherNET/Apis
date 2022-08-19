@@ -10,7 +10,6 @@ import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
 import net.theevilreaper.apis.schematic.Scaffolding;
-import net.theevilreaper.apis.schematic.model.Schematic;
 import org.jetbrains.annotations.NotNull;
 import org.jglrxavpok.hephaistos.nbt.NBTException;
 import org.slf4j.LoggerFactory;
@@ -23,19 +22,21 @@ import java.util.List;
 public class DungeonGeneratorImpl extends BaseGenerator {
 
     private final RoomSchematicLoader roomSchematicLoader;
-    private final List<RoomDTO> dtos = new ArrayList<>();
+    private final List<RoomDTO> dtos;
 
     private static final int ROOM_SIZE = 4;
 
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, instance, filePath);
         this.roomSchematicLoader = roomSchematicLoader;
+        this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
     }
 
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, filePath);
         this.roomSchematicLoader = roomSchematicLoader;
+        this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
     }
 
@@ -92,7 +93,7 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         }
     }
 
-    private void buildRoom(Point startPos, Path schematic) {
+    private void buildRoom(@NotNull Point startPos, @NotNull Path schematic) {
         try {
             var schematicSchem = Scaffolding.fromPath(schematic);
             schematicSchem.thenAccept(yolo -> {
