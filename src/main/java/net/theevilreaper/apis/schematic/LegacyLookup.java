@@ -42,7 +42,6 @@ import java.util.Map;
 @Internal
 public final class LegacyLookup {
 
-    private static final String LEGACY_FILE_NAME = "legacy.json";
     private static final Map<Integer, Short> LEGACY_LOOKUP = new HashMap<>();
 
     public LegacyLookup(@NotNull Path path) {
