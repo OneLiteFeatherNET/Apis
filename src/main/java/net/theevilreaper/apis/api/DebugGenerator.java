@@ -51,12 +51,9 @@ public class DebugGenerator extends BaseGenerator {
                 if (room.type() != RoomType.START_ROOM) {
                     int chunkX = room.x() - (oldStartRoomX - startChunk.getChunkX());
                     chunkX +=  (chunkX - startChunk.getChunkX()) * (ROOM_SIZE - 1);
-                    //chunkX *= (ROOM_SIZE - 1);
 
                     int chunkZ = room.z() - (oldStartRoomZ - startChunk.getChunkZ());
                     chunkZ += (chunkZ - startChunk.getChunkZ()) * (ROOM_SIZE - 1);
-                    //chunkZ *= (ROOM_SIZE - 1);
-
 
                     buildRoom(chunkX, chunkZ, getBlock(room), playerPosition.blockY());
                     generatorLogger.info("ChunkX is {}", chunkX);
@@ -74,13 +71,10 @@ public class DebugGenerator extends BaseGenerator {
 
         for (int xOffset = 0; xOffset <= (ROOM_SIZE - 1); xOffset++) {
             for (int zOffset = 0; zOffset <= (ROOM_SIZE - 1); zOffset++) {
-                //To add extra values (it just moves the whole dungeon)
                 currentChunk = instance.getChunk(chunkX + xOffset, chunkZ + zOffset);
-
                 if (currentChunk == null || !currentChunk.isLoaded()) {
-                    instance.loadChunk(chunkX + xOffset, chunkZ + zOffset).thenAccept(chunk -> {
-                        this.createChunkBatch(chunk, block, y);
-                    }).join();
+                    instance.loadChunk(chunkX + xOffset, chunkZ + zOffset)
+                            .thenAccept(chunk -> this.createChunkBatch(chunk, block, y)).join();
                 } else {
                     this.createChunkBatch(currentChunk, block, y);
                 }
