@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public interface DungeonGenerator {
     Gson GSON = new GsonBuilder().create();
 
-    int DEFAULT_ROOM_SIZE = 8;
+    int DEFAULT_ROOM_SIZE = 4;
 
     int DEFAULT_CHUNK_SCALE = 2;
 
