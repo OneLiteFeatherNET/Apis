@@ -3,6 +3,9 @@ package net.theevilreaper.apis.api.loader;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -10,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,40 +27,35 @@ import java.util.stream.Stream;
  **/
 public class RoomSchematicLoader {
 
+    private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
-
     private static final String REGION_FILE = ".json";
-
     private static final String SCHEMATIC_FILE = ".schem";
-
     private final Path basePath;
-
     public RoomSchematicLoader(@NotNull Path basePath) {
         this.basePath = basePath;
     }
 
+    @Nullable
     public List<Path> findRegions() {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isRegionFile).toList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException exception) {
+            SCHEMATIC_LOADER_LOGGER.warn("Unable to locate region files ", exception);
         }
+        return Collections.emptyList();
     }
 
     public List<Path> findSchematics() {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isSchematicFile).toList();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException exception) {
+            SCHEMATIC_LOADER_LOGGER.warn("Unable to locate schematic files ", exception);
         }
+        return Collections.emptyList();
     }
 
-    // ice_boss_2.schem / json
-
-    /**
-     * ice_normal_
-     */
-
+    @NotNull
     public Map<Path, Path> mapSchematicsByRegionsFiles(@NotNull List<Path> paths) {
         Map<Path, Path> schematics = new HashMap<>();
         for (Path path : paths) {
@@ -68,7 +67,7 @@ public class RoomSchematicLoader {
         return schematics;
     }
 
-    public RoomDTO findByRoomData(RoomData roomData, Map<Path, Path> mappedFiles) throws IOException {
+    public RoomDTO findByRoomData(@NotNull RoomData roomData, @NotNull Map<Path, Path> mappedFiles) throws IOException {
         RoomDTO result = null;
         for (Map.Entry<Path, Path> entry : mappedFiles.entrySet()) {
             Path key = entry.getKey();
@@ -85,10 +84,20 @@ public class RoomSchematicLoader {
         return result;
     }
 
+    /**
+     * Returns a boolean if the given path points to a region file.
+     * @param path the path to check
+     * @return True if the path points to a region file otherwise false
+     */
     private boolean isRegionFile(@NotNull Path path) {
         return path.toString().endsWith(REGION_FILE);
     }
 
+    /**
+     * Returns a boolean if the given path points to a schematic file.
+     * @param path the path to check
+     * @return True if the path points to a schematic file otherwise false
+     */
     private boolean isSchematicFile(@NotNull Path path) {
         return path.toString().endsWith(SCHEMATIC_FILE);
     }
