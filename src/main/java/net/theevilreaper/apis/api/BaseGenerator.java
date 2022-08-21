@@ -20,25 +20,26 @@ import java.util.List;
 
 import static net.theevilreaper.apis.api.Constants.*;
 
+/**
+ * The class contains the base implementation of a dungeon generator.
+ * This class implements to loading of a floor plan of a file
+ * @author Jolta
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 public abstract class BaseGenerator implements DungeonGenerator {
 
     protected static Logger generatorLogger = LoggerFactory.getLogger(BaseGenerator.class);
-
     protected final Path filePath;
     protected Instance instance;
-
     protected RoomData[][] floorPlan;
-
     protected RoomData startRoom;
-
     protected List<RoomData> roomData;
-
-    protected int roomScale;
-
+    protected int roomScale = DEFAULT_ROOM_SIZE;
     private final String name;
 
     /**
-     *
+     * Creates a new instance of the class with the given values.
      * @param name the name from the generator
      * @param instance the instance for the generator
      * @param filePath the path to the file
@@ -51,7 +52,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
     }
 
     /**
-     *
+     * Creates a new instance of the class with the given values.
      * @param name the name from the generator
      * @param filePath the path to the file
      */
@@ -70,8 +71,8 @@ public abstract class BaseGenerator implements DungeonGenerator {
             throw new NullPointerException("The given path does not exist");
         }
 
-        try {
-            JsonObject entry = GSON.fromJson(new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8), JsonObject.class);
+        try (var reader = new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8)) {
+            JsonObject entry = GSON.fromJson(reader, JsonObject.class);
 
             if (!entry.has("height")) {
                 throw new NullPointerException("The height attribute is missing");
@@ -104,7 +105,6 @@ public abstract class BaseGenerator implements DungeonGenerator {
                 var y = asJsonObject.get(ROOM_Y).getAsInt();
 
                 var roomType = RoomType.getRoomType(asJsonObject.get(ROOM_TYPE).getAsInt());
-
                 var doorArray = asJsonObject.get(ROOM_DOORS).getAsJsonArray();
 
                 if (doorArray == null || doorArray.isEmpty()) {
@@ -112,8 +112,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
                 }
 
                 var doors = new DoorFace[doorArray.size()];
-
-                int counter = 0;
+                var counter = 0;
 
                 for (JsonElement element : doorArray) {
                     doors[counter] = DoorFace.getFace( element.getAsInt());
@@ -130,7 +129,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
                 this.roomData.add(room);
             }
         } catch (IOException exception) {
-            exception.printStackTrace();
+            generatorLogger.warn("An exception occurred while loading floor plan", exception);
         }
     }
 
