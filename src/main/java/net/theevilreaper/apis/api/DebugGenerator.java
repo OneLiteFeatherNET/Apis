@@ -21,8 +21,6 @@ public class DebugGenerator extends BaseGenerator {
     private static final Block SHOP_ROOM = Block.YELLOW_CONCRETE;
     private static final Block ITEM_ROOM = Block.GREEN_CONCRETE;
 
-    private static final int ROOM_SIZE = 4;
-
     public DebugGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
         super(name, instance, filePath);
         generatorLogger = LoggerFactory.getLogger(DebugGenerator.class);
@@ -50,10 +48,10 @@ public class DebugGenerator extends BaseGenerator {
             for (RoomData room : roomData) {
                 if (room.type() != RoomType.START_ROOM) {
                     int chunkX = room.x() - (oldStartRoomX - startChunk.getChunkX());
-                    chunkX +=  (chunkX - startChunk.getChunkX()) * (ROOM_SIZE - 1);
+                    chunkX +=  (chunkX - startChunk.getChunkX()) * (roomScale - 1);
 
                     int chunkZ = room.z() - (oldStartRoomZ - startChunk.getChunkZ());
-                    chunkZ += (chunkZ - startChunk.getChunkZ()) * (ROOM_SIZE - 1);
+                    chunkZ += (chunkZ - startChunk.getChunkZ()) * (roomScale - 1);
 
                     buildRoom(chunkX, chunkZ, getBlock(room), playerPosition.blockY());
                     generatorLogger.info("ChunkX is {}", chunkX);
@@ -64,13 +62,12 @@ public class DebugGenerator extends BaseGenerator {
         generatorLogger.info("Finish");
     }
 
-    private void buildRoom(int chunkX, int chunkZ, Block block, int y)
-    {
+    private void buildRoom(int chunkX, int chunkZ, Block block, int y) {
         generatorLogger.info("chunkX: {}, chunkZ: {}", chunkX , chunkZ);
         Chunk currentChunk;
 
-        for (int xOffset = 0; xOffset <= (ROOM_SIZE - 1); xOffset++) {
-            for (int zOffset = 0; zOffset <= (ROOM_SIZE - 1); zOffset++) {
+        for (int xOffset = 0; xOffset <= (roomScale - 1); xOffset++) {
+            for (int zOffset = 0; zOffset <= (roomScale - 1); zOffset++) {
                 currentChunk = instance.getChunk(chunkX + xOffset, chunkZ + zOffset);
                 if (currentChunk == null || !currentChunk.isLoaded()) {
                     instance.loadChunk(chunkX + xOffset, chunkZ + zOffset)
@@ -82,6 +79,12 @@ public class DebugGenerator extends BaseGenerator {
         }
     }
 
+    /**
+     * Places a block into a given chunk.
+     * @param chunk the chunk to place the block
+     * @param block the block which should be placed
+     * @param y the y height for the generation
+     */
     private void createChunkBatch(@NotNull Chunk chunk, @NotNull Block block, int y) {
         var batch  = new ChunkBatch();
         for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
