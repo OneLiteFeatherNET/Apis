@@ -35,6 +35,8 @@ import java.util.concurrent.CompletableFuture;
  */
 public abstract class NBTSchematicReader {
 
+    protected static final String BLOCKS = "Blocks";
+
     /**
      * Checks if the provided NBT tag can be read by this reader.
      * @param compound The {@link NBTCompound} to check
