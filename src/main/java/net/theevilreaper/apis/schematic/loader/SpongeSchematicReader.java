@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.regex.Pattern;
 
 /**
  * A parser for Sponge schematics. (.schem files)
@@ -46,6 +47,12 @@ import java.util.concurrent.CompletionException;
  * <br><a href="https://github.com/EngineHub/WorldEdit/blob/303f5a76b2df70d63480f2126c9ef4b228eb3c59/worldedit-core/src/main/java/com/sk89q/worldedit/extent/clipboard/io/SpongeSchematicReader.java#L261-L297">Reference parser</a>
  */
 public class SpongeSchematicReader extends NBTSchematicReader {
+
+    private static final Pattern COMMA_PATTERN = Pattern.compile(",");
+
+    private static final Pattern SPLIT_PATTERN = Pattern.compile("=");
+
+    private static final Pattern BLOCK_PATTERN = Pattern.compile("\\[");
 
     @Override
     public boolean isReadable(@NotNull NBTCompound compound) {
@@ -56,7 +63,6 @@ public class SpongeSchematicReader extends NBTSchematicReader {
     @Override
     public CompletableFuture<Schematic> read(@NotNull NBTCompound nbtTag, @NotNull Schematic schematic) {
         schematic.reset();
-
         return CompletableFuture.supplyAsync(() -> {
             try {
                 readSizes(schematic, nbtTag);
@@ -158,10 +164,10 @@ public class SpongeSchematicReader extends NBTSchematicReader {
         String states = input.replaceAll(block.name(), "");
 
         if (states.startsWith("[")) {
-            String[] stateArray = states.substring(1, states.length() - 1).split(",");
+            String[] blockStates = COMMA_PATTERN.split(states.substring(1, states.length() - 1));
             Map<String, String> properties = new HashMap<>(block.properties());
-            for (String state : stateArray) {
-                String[] split = state.split("=");
+            for (String state : blockStates) {
+                String[] split = SPLIT_PATTERN.split(state);
                 properties.replace(split[0], split[1]);
             }
             try {
@@ -176,7 +182,6 @@ public class SpongeSchematicReader extends NBTSchematicReader {
     }
 
     private @Nullable Block getBlock(@NotNull String input) {
-        return Block.fromNamespaceId(input.split("\\[")[0]);
+        return Block.fromNamespaceId(BLOCK_PATTERN.split(input)[0]);
     }
-
 }
