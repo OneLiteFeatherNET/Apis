@@ -51,7 +51,6 @@ public final class Scaffolding {
 
     private Scaffolding() {}
 
-
     /**
      * Automatically detects the type of schematic and parses the file.
      *
@@ -78,7 +77,6 @@ public final class Scaffolding {
         if (!Files.exists(path)) throw new FileNotFoundException("Invalid Schematic: File does not exist");
         return fromStream(Files.newInputStream(path), schematic);
     }
-
 
     /**
      * Automatically detects the type of schematic and parses the file.
@@ -107,7 +105,6 @@ public final class Scaffolding {
         return fromStream(new FileInputStream(file), schematic);
     }
 
-
     /**
      * Automatically detects the type of schematic and parses the input stream
      *
@@ -133,7 +130,6 @@ public final class Scaffolding {
     public static @NotNull CompletableFuture<Schematic> fromStream(@NotNull InputStream inputStream, @NotNull Schematic schematic) throws IOException, NBTException {
         return fromNBT((NBTCompound) new NBTReader(inputStream, CompressedProcesser.GZIP).read(), schematic);
     }
-
 
     /**
      * Automatically detects the schematic format from the provided {@link NBTCompound} and parses it.
@@ -163,8 +159,6 @@ public final class Scaffolding {
             throw new IllegalArgumentException("Unknown schematic type");
         }
     }
-
-
 
     /**
      * @param path The {@link Path} to read from
@@ -215,7 +209,6 @@ public final class Scaffolding {
         return fromFile(file, schematic).join();
     }
 
-
     /**
      * Automatically detects the schematic format from the provided {@link NBTCompound} and parses it synchronously.
      *
@@ -240,7 +233,6 @@ public final class Scaffolding {
         return fromNBT(nbtTag, schematic).join();
     }
 
-
     /**
      * @param inputStream The {@link InputStream} to read from
      *
@@ -264,5 +256,4 @@ public final class Scaffolding {
     public static @NotNull Schematic fromStreamSync(@NotNull InputStream inputStream, @NotNull Schematic schematic) throws IOException, NBTException {
         return fromStream(inputStream, schematic).join();
     }
-
 }
