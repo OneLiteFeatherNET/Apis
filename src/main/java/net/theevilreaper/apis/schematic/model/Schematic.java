@@ -23,7 +23,6 @@
 package net.theevilreaper.apis.schematic.model;
 
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.batch.AbsoluteBlockBatch;
 import net.minestom.server.instance.block.Block;
@@ -31,6 +30,7 @@ import net.minestom.server.instance.block.Block.Setter;
 import net.minestom.server.instance.generator.GenerationUnit;
 import net.theevilreaper.apis.schematic.region.Region;
 import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -197,19 +197,6 @@ public final class Schematic implements Setter {
         return region.getUpper().blockY() < instance.getDimensionType().getMaxY() && region.getLower().blockY() > instance.getDimensionType().getMinY();
     }
 
-
-    /**
-     * Applies the schematic to the given block setter.
-     *
-     * @param setter the block setter
-     *
-     * @deprecated See {@link Schematic#apply(Point, boolean, boolean, boolean, Setter)}
-     */
-    @Deprecated
-    public void apply(@NotNull Block.Setter setter) {
-        apply(Vec.ZERO, false, false, false, setter);
-    }
-
     /**
      * Applies this schematic to the given {@link Setter} at the given {@link Point}. The schematic can be flipped along the X, Y, or Z axis using the {@code flipX}, {@code flipY}, and {@code flipZ} parameters.
      *
@@ -287,6 +274,7 @@ public final class Schematic implements Setter {
      * @param position the {@link Point} of the block to set
      * @param block    the {@link Block} to set
      */
+    @Override
     public void setBlock(@NotNull Point position, @NotNull Block block) {
         setBlock(position.blockX(), position.blockY(), position.blockZ(), block);
     }
@@ -414,14 +402,12 @@ public final class Schematic implements Setter {
         if (instance == null || position == null) {
             return false;
         }
-
         return isPlaceable(getContainingRegion(instance, position));
     }
 
-
+    @Contract(pure = true)
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return "Schematic{width=" + width + ", height=" + height + ", length=" + length + ", offsetX=" + offsetX + ", offsetY=" + offsetY + ", offsetZ=" + offsetZ + ", area=" + area + ", locked=" + locked + '}';
     }
-
 }
