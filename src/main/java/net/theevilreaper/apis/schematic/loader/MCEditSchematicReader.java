@@ -45,7 +45,7 @@ public class MCEditSchematicReader extends NBTSchematicReader {
     @Override
     public boolean isReadable(@NotNull NBTCompound compound) {
         // TODO: Improve this
-        return compound.contains("Blocks");
+        return compound.contains(BLOCKS);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MCEditSchematicReader extends NBTSchematicReader {
 
         return CompletableFuture.supplyAsync(() -> {
             try {
-                if (!nbtTag.containsKey("Blocks")) {
+                if (!nbtTag.containsKey(BLOCKS)) {
                     throw new NBTException("Invalid Schematic: No Blocks");
                 }
 
@@ -93,7 +93,7 @@ public class MCEditSchematicReader extends NBTSchematicReader {
             throw new NBTException("Invalid Schematic: Invalid Materials");
         }
 
-        byte[] blocks = getByteArray(nbtTag, "Blocks", "Invalid Schematic: No Blocks");
+        byte[] blocks = getByteArray(nbtTag, BLOCKS, "Invalid Schematic: No Blocks");
         byte[] blockData = getByteArray(nbtTag, "Data", "Invalid Schematic: No Block Data");
 
         // Each "add block" contains the upper 4 bits for 2 blocks packed in one byte
@@ -129,5 +129,4 @@ public class MCEditSchematicReader extends NBTSchematicReader {
             }
         }
     }
-
 }
