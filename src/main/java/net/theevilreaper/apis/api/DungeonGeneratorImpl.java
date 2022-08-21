@@ -23,9 +23,6 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
-
-    private static final int ROOM_SIZE = 4;
-
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, instance, filePath);
         this.roomSchematicLoader = roomSchematicLoader;
@@ -44,12 +41,15 @@ public class DungeonGeneratorImpl extends BaseGenerator {
     public void loadData() {
         super.loadData();
         var regions = this.roomSchematicLoader.findRegions();
+        if (regions == null || regions.isEmpty()) {
+            throw new IllegalArgumentException("Found a floor which does not contains any schematics");
+        }
         var mapped = this.roomSchematicLoader.mapSchematicsByRegionsFiles(regions);
         for (RoomData roomDat : roomData) {
             try {
                 dtos.add(this.roomSchematicLoader.findByRoomData(roomDat, mapped));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException exception) {
+                generatorLogger.warn("Unable to add schematic into the dto list", exception);
             }
         }
     }
@@ -76,14 +76,12 @@ public class DungeonGeneratorImpl extends BaseGenerator {
             for (RoomDTO dto : dtos) {
                 if (dto.getRoomData().type() != RoomType.START_ROOM) {
                     int chunkX = dto.getRoomData().x() - (oldStartRoomX - startChunk.getChunkX());
-                    chunkX +=  (chunkX - startChunk.getChunkX()) * (ROOM_SIZE - 1);
-                    //chunkX *= (ROOM_SIZE - 1);
+                    chunkX +=  (chunkX - startChunk.getChunkX()) * (roomScale - 1);
 
                     int chunkZ = dto.getRoomData().z() - (oldStartRoomZ - startChunk.getChunkZ());
-                    chunkZ += (chunkZ - startChunk.getChunkZ()) * (ROOM_SIZE - 1);
-                    //chunkZ *= (ROOM_SIZE - 1);
+                    chunkZ += (chunkZ - startChunk.getChunkZ()) * (roomScale - 1);
 
-                    buildRoom(new Vec(startPos.blockX() + (16 * chunkX), startPos.blockY(), startPos.blockX() + (16 * chunkZ)), dto.getSchematicPath());
+                    buildRoom(new Vec(startPos.blockX() + (double)(Chunk.CHUNK_SIZE_X * chunkX), startPos.blockY(), startPos.blockX() + (double)(Chunk.CHUNK_SIZE_Z * chunkZ)), dto.getSchematicPath());
                     generatorLogger.info("ChunkX is {}", chunkX);
                     generatorLogger.info("ChunkZ is {}", chunkZ);
                     generatorLogger.info("PosX is {}", startPos.blockX() + (16 * chunkX));
@@ -93,18 +91,19 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         }
     }
 
-    private void buildRoom(@NotNull Point startPos, @NotNull Path schematic) {
+    private void buildRoom(@NotNull Point startPos, @NotNull Path schematicPath) {
         try {
-            var schematicSchem = Scaffolding.fromPath(schematic);
-            schematicSchem.thenAccept(yolo -> {
-                yolo.build(instance, startPos).thenRun(() ->
-                        generatorLogger.info("Schematic successfully placed")).join();
-            });
-        } catch (IOException | NBTException e) {
-            throw new RuntimeException(e);
+            var future = Scaffolding.fromPath(schematicPath);
+            future.thenAccept(schematic -> schematic.build(instance, startPos).thenRun(() ->
+                    generatorLogger.info("Schematic successfully placed")).join());
+        } catch (IOException | NBTException exception) {
+            generatorLogger.warn("Unable to generate the schematic", exception);
         }
     }
 
+    /**
+     * Implementation of the save method to save a dungeon into the world folder.
+     */
     @Override
     public void save() {
         throw new UnsupportedOperationException("Not implemented yet");
