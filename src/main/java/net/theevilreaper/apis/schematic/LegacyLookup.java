@@ -25,9 +25,11 @@ package net.theevilreaper.apis.schematic;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.ApiStatus.Internal;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,18 +41,27 @@ import java.util.Map;
 /**
  * A static utility class containing useful methods used throughout Scaffolding.
  */
-@Internal
+@ApiStatus.Experimental
 public final class LegacyLookup {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LegacyLookup.class);
 
     private static final Map<Integer, Short> LEGACY_LOOKUP = new HashMap<>();
 
-    public LegacyLookup(@NotNull Path path) {
+    private LegacyLookup() {}
+
+    public static void readFile(@NotNull Path path) {
         JsonElement elements = null;
         try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
             elements = new Gson().fromJson(reader, JsonElement.class);
         } catch (IOException exception) {
-            exception.printStackTrace();
+            LOGGER.warn("Unable to load legacy.json file", exception);
         }
+
+        if (elements == null) {
+            throw new NullPointerException("Unable to load file with zero content");
+        }
+
         var jsonArray = elements.getAsJsonArray();
         for (JsonElement element : jsonArray) {
             JsonObject object = element.getAsJsonObject();
@@ -80,6 +91,6 @@ public final class LegacyLookup {
      */
     @Contract(pure = true)
     private static int getLookupId(int legacyBlockId, byte legacyBlockData) {
-        return legacyBlockId << 8 | legacyBlockData;
+        return legacyBlockId << 8 | (legacyBlockData & 0xff);
     }
 }
