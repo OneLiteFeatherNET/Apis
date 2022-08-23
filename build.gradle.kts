@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.sonarqube)
     jacoco
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    `maven-publish`
 }
 
 group = "net.theevilreaper.apis"
@@ -100,8 +101,37 @@ sonarqube {
     }
 }
 
-if (System.getenv().containsKey("CI")) {
-    version = "${baseVersion}+${System.getenv("CI_COMMIT_SHORT_SHA")}"
+publishing {
+    publications {
+
+        create<MavenPublication>("maven") {
+            from(components["java"])
+        }
+
+    }
+    if (System.getenv().containsKey("CI")) {
+        repositories {
+            maven {
+                name = "GitLab"
+                val ciApiv4Url = System.getenv("CI_API_V4_URL")
+                val projectId = System.getenv("CI_PROJECT_ID")
+                url = uri("$ciApiv4Url/projects/$projectId/packages/maven")
+                credentials(HttpHeaderCredentials::class.java) {
+                    name = "Job-Token"
+                    value = System.getenv("CI_JOB_TOKEN")
+                }
+                authentication {
+                    create<HttpHeaderAuthentication>("header")
+                }
+            }
+        }
+    }
+
+}
+
+
+version = if (System.getenv().containsKey("CI")) {
+    "${baseVersion}+${System.getenv("CI_COMMIT_SHORT_SHA")}"
 } else {
-    version = baseVersion
+    baseVersion
 }
