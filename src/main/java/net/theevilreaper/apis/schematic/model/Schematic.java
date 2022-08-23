@@ -43,18 +43,20 @@ import java.util.concurrent.CompletableFuture;
 public final class Schematic implements Setter {
 
     private short[] blocks;
-
-    private int width, height, length;
-    private int offsetX, offsetY, offsetZ;
+    private int width;
+    private int height;
+    private int length;
+    private int offsetX;
+    private int offsetY;
+    private int offsetZ;
     private int area;
-
     private boolean locked;
 
     /**
      * Constructs a new schematic. The schematic will be locked and have an area of 0.
      */
     public Schematic() {
-        reset();
+        this.setLocked(true);
     }
 
     /**
@@ -80,18 +82,18 @@ public final class Schematic implements Setter {
     public @NotNull CompletableFuture<Schematic> copy(@NotNull Region region) {
         reset();
 
-        return region.loadChunks().thenApply((ignored) -> {
+        return region.loadChunks().thenApply(ignored -> {
             Instance instance = region.getInstance();
             Point lower = region.getLower();
-            int width = region.getWidth();
-            int height = region.getHeight();
-            int length = region.getLength();
+            int regionWidth = region.getWidth();
+            int regionHeight = region.getHeight();
+            int regionLength = region.getLength();
 
-            setSize(width, height, length);
+            setSize(regionWidth, regionHeight, regionLength);
 
-            for (int x = 0; x < width; ++x) {
-                for (int y = 0; y < height; ++y) {
-                    for (int z = 0; z < length; ++z) {
+            for (int x = 0; x < regionWidth; ++x) {
+                for (int y = 0; y < regionHeight; ++y) {
+                    for (int z = 0; z < regionLength; ++z) {
                         int blockX = lower.blockX() + x;
                         int blockY = lower.blockY() + y;
                         int blockZ = lower.blockZ() + z;
@@ -171,7 +173,7 @@ public final class Schematic implements Setter {
             throw new IllegalStateException("Cannot build schematic at this position since blocks would go outside of world boundaries. " + position);
         }
 
-        return region.loadChunks().thenApplyAsync((ignored) -> {
+        return region.loadChunks().thenApplyAsync(ignored -> {
             AbsoluteBlockBatch blockBatch = new AbsoluteBlockBatch();
             apply(region.getLower(), flipX, flipY, flipZ, blockBatch);
 
