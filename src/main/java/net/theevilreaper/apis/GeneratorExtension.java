@@ -28,7 +28,7 @@ public class GeneratorExtension extends Extension {
     @Override
     public void initialize() {
         this.initFolder();
-        new LegacyLookup(getDataDirectory().resolve(LEGACY_FILE));
+        LegacyLookup.readFile(getDataDirectory().resolve(LEGACY_FILE));
 
         var debugProperty = Boolean.parseBoolean(System.getProperty("apis.debug"));
 
