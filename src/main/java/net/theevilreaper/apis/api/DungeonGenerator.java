@@ -17,6 +17,8 @@ import org.jetbrains.annotations.NotNull;
 public sealed interface DungeonGenerator permits BaseGenerator {
     Gson GSON = new GsonBuilder().create();
 
+    int MAX_FLOOR_ID = 5;
+
     int DEFAULT_ROOM_SIZE = 4;
 
     int DEFAULT_CHUNK_SCALE = 2;
