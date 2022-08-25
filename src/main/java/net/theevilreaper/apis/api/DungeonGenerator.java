@@ -9,17 +9,21 @@ import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
 
 /**
+ * The class defines the basic structure of method for a {@link DungeonGenerator}.
  * @author Joltra
  * @version 1.0.0
  * @since 1.0.0
  */
-public interface DungeonGenerator {
+public sealed interface DungeonGenerator permits BaseGenerator {
     Gson GSON = new GsonBuilder().create();
 
     int DEFAULT_ROOM_SIZE = 4;
 
     int DEFAULT_CHUNK_SCALE = 2;
 
+    /**
+     * Loads the plan structure of a floor from a file.
+     */
     void loadData();
 
     /**
@@ -36,17 +40,42 @@ public interface DungeonGenerator {
      */
     default void generate(@NotNull Player player) {
         this.generate(player.getPosition().asVec());
+        this.setInstance(player.getInstance());
     }
 
+    /**
+     * Saves the dungeon into a world folder.
+     *
+     * Please note that the method is not implemented!!!
+     */
     default void save() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    /**
+     * Set the room scale for the generation.
+     *
+     * @param scale the scale to set
+     */
     void setRoomScale(int scale);
 
+    /**
+     * Set the instance for the generation of the dungeon.
+     *
+     * @param instance the instance object to set
+     */
     void setInstance(@NotNull Instance instance);
 
+    /**
+     * Returns the name of the generator instance.
+     *
+     * @return the given name
+     */
     @NotNull String getName();
 
+    /**
+     * Returns the array which contains the loaded floor plan.
+     * @return the given array
+     */
     @NotNull RoomData[][] getFloorPlan();
 }
