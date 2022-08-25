@@ -66,7 +66,7 @@ class BaseGeneratorTest {
 
         var generator = new DungeonGeneratorImpl("Isaac", null, filePath, null);
 
-        var exception = assertThrows(NullPointerException.class, generator::loadData);
-        assertEquals("A room must have at least one door", exception.getMessage());
+        var exception = assertThrows(IllegalArgumentException.class, generator::loadData);
+        assertEquals("Only a boss rom can have zero doors", exception.getMessage());
     }
 }
