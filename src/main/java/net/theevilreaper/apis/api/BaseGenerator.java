@@ -27,7 +27,7 @@ import static net.theevilreaper.apis.api.Constants.*;
  * @version 1.0.0
  * @since 1.0.0
  */
-public abstract class BaseGenerator implements DungeonGenerator {
+public abstract non-sealed class BaseGenerator implements DungeonGenerator {
 
     protected static Logger generatorLogger = LoggerFactory.getLogger(BaseGenerator.class);
     protected final Path filePath;
@@ -67,7 +67,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
      */
     @Override
     public void loadData() {
-        if (!Files.exists(filePath)) {
+        if (Files.notExists(filePath)) {
             throw new NullPointerException("The given path does not exist");
         }
 
@@ -100,10 +100,8 @@ public abstract class BaseGenerator implements DungeonGenerator {
 
             for (JsonElement jsonElement : floor) {
                 JsonObject asJsonObject = jsonElement.getAsJsonObject();
-
                 var x = asJsonObject.get(ROOM_X).getAsInt();
                 var y = asJsonObject.get(ROOM_Y).getAsInt();
-
                 var roomType = RoomType.getRoomType(asJsonObject.get(ROOM_TYPE).getAsInt());
                 var doorArray = asJsonObject.get(ROOM_DOORS).getAsJsonArray();
 
@@ -119,7 +117,7 @@ public abstract class BaseGenerator implements DungeonGenerator {
                 var counter = 0;
 
                 for (JsonElement element : doorArray) {
-                    doors[counter] = DoorFace.getFace( element.getAsInt());
+                    doors[counter] = DoorFace.getFace(element.getAsInt());
                     counter++;
                 }
 
