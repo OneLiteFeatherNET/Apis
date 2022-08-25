@@ -110,7 +110,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
                 }
 
                 if (doorArray.isEmpty() && roomType != RoomType.BOSS_ROOM) {
-                    throw new IllegalArgumentException("Onyl a boss rom can have zero doors");
+                    throw new IllegalArgumentException("Only a boss rom can have zero doors");
                 }
 
                 var doors = new DoorFace[doorArray.size()];
