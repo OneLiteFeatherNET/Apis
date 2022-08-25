@@ -1,15 +1,19 @@
-# Zosma
+# Apis
+The project is the Minestom implementation of the DungeonGenerator. This extension reads the output from the
+python generator and generates the dungeon with some schematics.
 
-## How to create a sonarqube key
-1. Go to https://sonarqube.themeinerlp.dev
-2. Press login with gitlab
-   1. Repeat this step many times(Home -> Gitlab)
-3. Click on create project(with gitlab icon)
-4. Choose your project and press set up
-5. Press at "With GitLab CI"
-6. Choose Other
-7. Copy the value of `sonar.projectKey`
-8. Press continue
-9. Press continue
-10. Finish this tutorial
-11. Go to your project and replace the value of `sonarKey` 
+# Dungeon Generator (Interface)
+The structure of a generation is defined in the DungeonGenerator interface and the basic implementation is covered
+by the BaseGenerator class.
+The BaseGenerator contains the implementation to read a dungeon from a file and recreates the floor plan from it.
+
+# DebugGenerator
+
+
+# Limitations
+
+The current implementation has some restrictions which are important:
+
+- The floor id is limited to **5** (the value scales the amount of rooms)
+- The room scale is limited to **4** (which means a room contains **16** Chunks)
+- 
