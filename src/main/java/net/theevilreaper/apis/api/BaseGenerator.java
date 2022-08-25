@@ -107,8 +107,12 @@ public abstract class BaseGenerator implements DungeonGenerator {
                 var roomType = RoomType.getRoomType(asJsonObject.get(ROOM_TYPE).getAsInt());
                 var doorArray = asJsonObject.get(ROOM_DOORS).getAsJsonArray();
 
-                if (doorArray == null || doorArray.isEmpty()) {
+                if (doorArray == null) {
                     throw new NullPointerException("A room must have at least one door");
+                }
+
+                if (doorArray.isEmpty() && roomType != RoomType.BOSS_ROOM) {
+                    throw new IllegalArgumentException("Onyl a boss rom can have zero doors");
                 }
 
                 var doors = new DoorFace[doorArray.size()];
