@@ -23,6 +23,8 @@ public sealed interface DungeonGenerator permits BaseGenerator {
 
     int DEFAULT_CHUNK_SCALE = 2;
 
+    int MAX_Y_HEIGHT = 180;
+
     /**
      * Loads the plan structure of a floor from a file.
      */
@@ -41,7 +43,12 @@ public sealed interface DungeonGenerator permits BaseGenerator {
      * @param player the player to generate the dungeon for.
      */
     default void generate(@NotNull Player player) {
-        this.generate(player.getPosition().asVec());
+        var position = player.getPosition();
+        if (position.y() >= MAX_Y_HEIGHT) {
+            player.sendMessage("Y is to high");
+            return;
+        }
+        this.generate(position.asVec());
         this.setInstance(player.getInstance());
     }
 
