@@ -26,11 +26,10 @@ import java.util.stream.Stream;
  * @since 1.0.0
  **/
 public class RoomSchematicLoader {
-
+    public static final String REGION_FILE = ".json";
+    public static final String SCHEMATIC_FILE = ".schem";
     private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
-    private static final String REGION_FILE = ".json";
-    private static final String SCHEMATIC_FILE = ".schem";
     private final Path basePath;
     public RoomSchematicLoader(@NotNull Path basePath) {
         this.basePath = basePath;
