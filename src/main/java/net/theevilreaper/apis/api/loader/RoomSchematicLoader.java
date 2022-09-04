@@ -1,5 +1,6 @@
 package net.theevilreaper.apis.api.loader;
 
+import net.theevilreaper.apis.api.Constants;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
@@ -20,22 +21,35 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import static net.theevilreaper.apis.api.Constants.REGION_FILE;
+import static net.theevilreaper.apis.api.Constants.SCHEMATIC_FILE;
+
 /**
+ * The class contains the main logic to load the schematic
+ * and region files for the dungeon generation from a given path.
  * @author theEvilReaper
  * @version 1.0.0
  * @since 1.0.0
  **/
 public class RoomSchematicLoader {
-    public static final String REGION_FILE = ".json";
-    public static final String SCHEMATIC_FILE = ".schem";
+
     private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
     private final Path basePath;
+
+    /**
+     * Creates a new instance of the class.
+     * @param basePath the path which contains the files for the generation
+     */
     public RoomSchematicLoader(@NotNull Path basePath) {
         this.basePath = basePath;
     }
 
-    @Nullable
+    /**
+     * Search for all files in the folder which ends with {@link Constants#REGION_FILE}.
+     * @return the list which contains the files
+     */
+    @NotNull
     public List<Path> findRegions() {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isRegionFile).toList();
@@ -45,6 +59,10 @@ public class RoomSchematicLoader {
         return Collections.emptyList();
     }
 
+    /**
+     * Search for all files in the folder which ends with {@link Constants#SCHEMATIC_FILE}.
+     * @return the list which contains the files
+     */
     public List<Path> findSchematics() {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isSchematicFile).toList();
@@ -54,6 +72,11 @@ public class RoomSchematicLoader {
         return Collections.emptyList();
     }
 
+    /**
+     * Maps the schematics by a given list which contains the region files.
+     * @param paths the list which contains the region files
+     * @return a {@link Map} which contains the mapped data
+     */
     @NotNull
     public Map<Path, Path> mapSchematicsByRegionsFiles(@NotNull List<Path> paths) {
         Map<Path, Path> schematics = new HashMap<>();
@@ -66,6 +89,14 @@ public class RoomSchematicLoader {
         return schematics;
     }
 
+    /**
+     * Returns a {@link RoomDTO} reference by the id from the room.
+     * @param roomData a reference from a {@link RoomData}
+     * @param mappedFiles a map which contains the path from the schematic and region file
+     * @return the created {@link RoomDTO} reference
+     * @throws IOException if something went wrong
+     */
+    @Nullable
     public RoomDTO findByRoomData(@NotNull RoomData roomData, @NotNull Map<Path, Path> mappedFiles) throws IOException {
         RoomDTO result = null;
         for (Map.Entry<Path, Path> entry : mappedFiles.entrySet()) {
