@@ -1,6 +1,9 @@
 package net.theevilreaper.apis.api.data;
 
 /**
+ * The enum contains all room types that currently exist.
+ * The types provide a clear distinction as to which room is involved.
+ * Logic can also be separated according to this
  * @author Joltra
  * @version 1.0.0
  * @since 1.0.0
@@ -16,9 +19,12 @@ public enum RoomType {
     BOSS_ROOM(6);
 
     private final int id;
-
     private static final RoomType[] values = values();
 
+    /**
+     * Creates a new entry for the enum.
+     * @param id the id for the room
+     */
     RoomType(int id) {
         this.id = id;
     }
