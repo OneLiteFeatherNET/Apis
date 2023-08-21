@@ -1,4 +1,4 @@
-rootProject.name = "apis"
+rootProject.name = "Apis"
 
 dependencyResolutionManagement {
     versionCatalogs {
@@ -9,6 +9,7 @@ dependencyResolutionManagement {
             library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").version("5.10.0")
             library("mockito-core", "org.mockito", "mockito-core").version("5.4.0")
             library("mockito-junit", "org.mockito", "mockito-junit-jupiter").version("5.4.0")
+            library("schem", "com.github.hollow-cube.common", "schem").version("db5eab9512")
         }
     }
 }
