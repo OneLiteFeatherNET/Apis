@@ -48,6 +48,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.schem)
     compileOnly(libs.minestom)
 
     testImplementation(libs.minestom)
