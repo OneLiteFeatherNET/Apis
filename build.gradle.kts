@@ -1,11 +1,9 @@
-import org.sonarqube.gradle.SonarQubeTask
-
 plugins {
     java
-    alias(libs.plugins.sonarqube)
     jacoco
-    id("com.github.johnrengelman.shadow") version "7.1.2"
     `maven-publish`
+    id("org.sonarqube") version "4.3.0.3225"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "net.theevilreaper.apis"
@@ -51,12 +49,12 @@ repositories {
 
 dependencies {
     compileOnly(libs.minestom)
-    implementation("net.theevilreaper.atlas:Atlas:0.0.1-SNAPSHOT+8aec189f")
 
     testImplementation(libs.minestom)
-    testImplementation("net.theevilreaper.atlas:Atlas:0.0.1-SNAPSHOT+8aec189f")
-    testImplementation(libs.junitApi)
-    testRuntimeOnly(libs.junitEngine)
+    testImplementation(libs.minestom.test)
+    testImplementation(libs.junit.jupiter)
+
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 tasks {
@@ -90,7 +88,7 @@ tasks {
         }
     }
 
-    getByName<SonarQubeTask>("sonarqube") {
+    getByName("sonar") {
         dependsOn(rootProject.tasks.test)
     }
 }
