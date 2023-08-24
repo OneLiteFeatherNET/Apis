@@ -9,11 +9,14 @@ public final class Constants {
 
     private Constants() {}
 
-    public static final String ROOM_ID = "_Room__id";
-    public static final String ROOM_X = "_Room__x";
-    public static final String ROOM_Y = "_Room__y";
-    public static final String ROOM_DOORS = "doors";
-    public static final String ROOM_TYPE = "room_type";
+    public static final String ROOM_ID = "_id";
+    public static final String ROOM_X = "_x";
+    public static final String ROOM_Y = "_y";
+    public static final String ROOM_DOORS = "_doors";
+    public static final String ROOM_TYPE = "_room_type";
     public static final String REGION_FILE = ".json";
     public static final String SCHEMATIC_FILE = ".schem";
+    public static final String HEIGHT = "_height";
+    public static final String WIDTH = "_width";
+    public static final String FLOOR = "_floor";
 }
