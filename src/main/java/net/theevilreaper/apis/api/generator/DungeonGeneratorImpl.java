@@ -1,17 +1,17 @@
-package net.theevilreaper.apis.api;
+package net.theevilreaper.apis.api.generator;
 
+import net.hollowcube.util.schem.Rotation;
+import net.hollowcube.util.schem.SchematicReader;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.coordinate.Pos;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
+import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
-import net.theevilreaper.apis.schematic.Scaffolding;
 import org.jetbrains.annotations.NotNull;
-import org.jglrxavpok.hephaistos.nbt.NBTException;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author theEvilReaper
  * @version 1.0.0
  * @since 1.0.0
@@ -47,8 +46,9 @@ public class DungeonGeneratorImpl extends BaseGenerator {
     @Override
     public void loadData() {
         super.loadData();
+        this.dtos.clear();
         var regions = this.roomSchematicLoader.findRegions();
-        if (regions == null || regions.isEmpty()) {
+        if (regions.isEmpty()) {
             throw new IllegalArgumentException("Found a floor which does not contains any schematics");
         }
         var mapped = this.roomSchematicLoader.mapSchematicsByRegionsFiles(regions);
@@ -63,32 +63,45 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
-        var endX = startPos.blockX() * (roomScale - 1);
-        var endZ = startPos.blockZ() * (roomScale - 1);
-        var endPos = new Vec(endX, startPos.blockY(), endZ);
+        // -100 * 4 = 400
+        // 16 * 4 = -100 +
+
+/*
+        var endX = (startPos.chunkX() * 16) + (roomScale);
+        var endZ = (startPos.chunkZ() * 16) + (16 * roomScale);
+        var endPos = new Pos(endX, startPos.blockY(), endZ);*/
+
+        //V(1, 150, 1) -> endX = 1 + (4-1) = 4
+
+        var endX = startPos.blockX() + (16 * roomScale) - 1;
+        var endZ = startPos.blockZ() + (16 * roomScale) - 1;
+        var endPos = new Vec(endX, startPos.blockY(), endZ + 1);
+
 
         if (!dtos.isEmpty()) {
-            int oldStartRoomX = -1;
-            int oldStartRoomZ = 1;
-            Pos playerPosition = Pos.fromPoint(startPos);
-            Chunk startChunk = instance.getChunk(playerPosition.chunkX(), playerPosition.chunkZ());
+            int oldStartRoomX = 0;
+            int oldStartRoomZ = 0;
+
+            //Pos playerPosition = Pos.fromPoint(startPos);
+            Chunk startChunk = instance.getChunk(endPos.chunkX(), endPos.chunkZ());
             generatorLogger.info("New Start Room ({}, {})", startPos.chunkX(), startPos.chunkZ());
             for (RoomDTO room : dtos) {
                 if (room.getRoomData().type().equals(RoomType.START_ROOM)) {
-                    buildRoom(endPos, room.getSchematicPath());
+                    buildRoom(endPos, room.getSchematicPath()); //Why endPos?
                     oldStartRoomX = room.getRoomData().x();
                     oldStartRoomZ = room.getRoomData().z();
                 }
             }
+
             for (RoomDTO dto : dtos) {
                 if (dto.getRoomData().type() != RoomType.START_ROOM) {
                     int chunkX = dto.getRoomData().x() - (oldStartRoomX - startChunk.getChunkX());
-                    chunkX +=  (chunkX - startChunk.getChunkX()) * (roomScale - 1);
+                    chunkX += (chunkX - startChunk.getChunkX()) * (roomScale - 1);
 
                     int chunkZ = dto.getRoomData().z() - (oldStartRoomZ - startChunk.getChunkZ());
                     chunkZ += (chunkZ - startChunk.getChunkZ()) * (roomScale - 1);
 
-                    var newVec = new Vec(((startPos.blockX())+ (double)((Chunk.CHUNK_SIZE_X) * chunkX)), startPos.blockY(), (startPos.blockZ()) + (double)(Chunk.CHUNK_SIZE_Z * chunkZ));
+                    var newVec = new Vec(((endPos.blockX()) + (double) ((Chunk.CHUNK_SIZE_X) * chunkX)), startPos.blockY(), (endPos.blockZ()) + (double) (Chunk.CHUNK_SIZE_Z * chunkZ) + 1);
 
                     if (newVec.blockX() % 64 != 0 || newVec.blockZ() % 64 != 0) {
                         generatorLogger.info("ChunkX is {}", chunkX);
@@ -98,23 +111,17 @@ public class DungeonGeneratorImpl extends BaseGenerator {
                     }
 
                     buildRoom(newVec, dto.getSchematicPath());
-                   /* generatorLogger.info("ChunkX is {}", chunkX);
-                    generatorLogger.info("ChunkZ is {}", chunkZ);
-                    generatorLogger.info("PosX is {}", startPos.blockX() + (16 * chunkX));
-                    generatorLogger.info("PosZ is {}", startPos.blockZ() + (16 * chunkZ));*/
                 }
             }
         }
     }
 
     private void buildRoom(@NotNull Point position, @NotNull Path schematicPath) {
-        try {
-            var future = Scaffolding.fromPath(schematicPath);
-            future.thenAccept(schematic -> schematic.build(instance, position).thenRun(() ->
-                    generatorLogger.info("Schematic successfully placed")).join());
-        } catch (IOException | NBTException exception) {
-            generatorLogger.warn("Unable to generate the schematic", exception);
-        }
+        var schematic = SchematicReader.read(schematicPath);
+        schematic.build(Rotation.NONE, null).apply(instance, position, () -> {
+            generatorLogger.info("Schematic successfully placed");
+        });
+
     }
 
     /**
