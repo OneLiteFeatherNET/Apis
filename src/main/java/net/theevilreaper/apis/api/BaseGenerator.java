@@ -74,25 +74,25 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
         try (var reader = new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8)) {
             JsonObject entry = GSON.fromJson(reader, JsonObject.class);
 
-            if (!entry.has("height")) {
+            if (!entry.has(HEIGHT)) {
                 throw new NullPointerException("The height attribute is missing");
             }
 
-            var height = entry.get("height").getAsInt();
+            var height = entry.get(HEIGHT).getAsInt();
 
-            if (!entry.has("width")) {
+            if (!entry.has(WIDTH)) {
                 throw new NullPointerException("The width attribute is missing");
             }
 
-            var width = entry.get("width").getAsInt();
+            var width = entry.get(WIDTH).getAsInt();
 
             this.floorPlan = new RoomData[height][width];
 
-            if (!entry.has("floor")) {
+            if (!entry.has(FLOOR)) {
                 throw new NullPointerException("The floor attribute is missing");
             }
 
-            var floor = entry.get("floor").getAsJsonArray();
+            var floor = entry.get(FLOOR).getAsJsonObject().get("_rooms").getAsJsonArray();
 
             if (floor.isEmpty()) {
                 throw new NullPointerException("The floor can not be empty");
