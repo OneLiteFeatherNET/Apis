@@ -1,5 +1,6 @@
 package net.theevilreaper.apis.api;
 
+import net.theevilreaper.apis.api.generator.DungeonGeneratorImpl;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
