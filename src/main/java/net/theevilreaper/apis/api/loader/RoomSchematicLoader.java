@@ -1,6 +1,6 @@
 package net.theevilreaper.apis.api.loader;
 
-import net.theevilreaper.apis.api.Constants;
+import net.theevilreaper.apis.api.util.Constants;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static net.theevilreaper.apis.api.Constants.REGION_FILE;
-import static net.theevilreaper.apis.api.Constants.SCHEMATIC_FILE;
+import static net.theevilreaper.apis.api.util.Constants.REGION_FILE;
+import static net.theevilreaper.apis.api.util.Constants.SCHEMATIC_FILE;
 
 /**
  * The class contains the main logic to load the schematic
@@ -31,7 +31,7 @@ import static net.theevilreaper.apis.api.Constants.SCHEMATIC_FILE;
  * @version 1.0.0
  * @since 1.0.0
  **/
-public class RoomSchematicLoader {
+public final class RoomSchematicLoader {
 
     private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
