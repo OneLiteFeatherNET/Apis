@@ -7,12 +7,15 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.instance.block.Block;
-import net.minestom.server.utils.chunk.ChunkUtils;
 import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.generator.functional.ChunkHandling;
+import net.theevilreaper.apis.api.generator.exception.GeneratorGenerationException;
+import net.theevilreaper.apis.api.generator.unit.RoomUnit;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
+import net.theevilreaper.apis.api.util.GenerationChunkHandling;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +23,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author theEvilReaper
@@ -31,8 +33,8 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
-
-    private final List<GenerationUnit> units;
+    private final List<RoomUnit> units;
+    private final ChunkHandling chunkHandling;
 
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, instance, filePath);
@@ -40,6 +42,7 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
         this.units = new ArrayList<>();
+        this.chunkHandling = GenerationChunkHandling::handleGenerationChunkLoading;
     }
 
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
@@ -48,6 +51,7 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
         this.units = new ArrayList<>();
+        this.chunkHandling = GenerationChunkHandling::handleGenerationChunkLoading;
     }
 
     @Override
@@ -70,26 +74,26 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
-        var startRoom = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst().get();
+        var startRoomOptional = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst();
+
+        if (startRoomOptional.isEmpty()) {
+            throw new GeneratorGenerationException("The floor plan contains no start room!");
+        }
+
+        var startRoom = startRoomOptional.get();
+
         this.loadChunks(startPos, startRoom.getRoomData(), startRoom);
         for (RoomDTO dto : dtos) {
             this.loadChunks(startPos, startRoom.getRoomData(), dto);
         }
 
-
-        this.units.forEach(generationUnit -> {
-            for (Map.Entry<Vec, Chunk> posChunks : generationUnit.getChunks().entrySet()) {
-                if (!ChunkUtils.isLoaded(posChunks.getValue())) {
-                    instance.loadChunk(posChunks.getKey());
-                }
-            }
-        });
-
         if (this.units.isEmpty()) {
-            throw new IllegalArgumentException("NOPÜE");
+            throw new GeneratorGenerationException("Something wen't wrong during the chunk scanning!");
         }
+        this.units.forEach(roomUnit -> this.chunkHandling.handleChunks(instance, roomUnit.getChunks()));
 
-        for (GenerationUnit unit : units) {
+
+        for (RoomUnit unit : units) {
             buildRoom(unit.getOriginPoint(), unit.getSchematicPath());
         }
     }
@@ -100,7 +104,7 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         int oldStartRoomX = startPos.blockX();
         int oldStartRoomZ = startPos.blockZ();
 
-        var roomUnit = new GenerationUnit();
+        var roomUnit = RoomUnit.builder();
 
         Vec roomVec;
 
@@ -157,7 +161,7 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
         roomUnit.setSchematicPath(currentRoom.getSchematicPath());
 
-        this.units.add(roomUnit);
+        this.units.add(roomUnit.build());
         System.out.println("");
     }
 
