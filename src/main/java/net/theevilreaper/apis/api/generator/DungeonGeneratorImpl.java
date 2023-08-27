@@ -6,6 +6,8 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.instance.block.Block;
+import net.minestom.server.utils.chunk.ChunkUtils;
 import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author theEvilReaper
@@ -29,11 +32,14 @@ public class DungeonGeneratorImpl extends BaseGenerator {
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
 
+    private final List<GenerationUnit> units;
+
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, instance, filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
+        this.units = new ArrayList<>();
     }
 
     public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
@@ -41,6 +47,7 @@ public class DungeonGeneratorImpl extends BaseGenerator {
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
+        this.units = new ArrayList<>();
     }
 
     @Override
@@ -63,57 +70,95 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
-        // -100 * 4 = 400
-        // 16 * 4 = -100 +
-
-/*
-        var endX = (startPos.chunkX() * 16) + (roomScale);
-        var endZ = (startPos.chunkZ() * 16) + (16 * roomScale);
-        var endPos = new Pos(endX, startPos.blockY(), endZ);*/
-
-        //V(1, 150, 1) -> endX = 1 + (4-1) = 4
-
-        var endX = startPos.blockX() + (16 * roomScale) - 1;
-        var endZ = startPos.blockZ() + (16 * roomScale) - 1;
-        var endPos = new Vec(endX, startPos.blockY(), endZ + 1);
+        var startRoom = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst().get();
+        this.loadChunks(startPos, startRoom.getRoomData(), startRoom);
+        for (RoomDTO dto : dtos) {
+            this.loadChunks(startPos, startRoom.getRoomData(), dto);
+        }
 
 
-        if (!dtos.isEmpty()) {
-            int oldStartRoomX = 0;
-            int oldStartRoomZ = 0;
-
-            //Pos playerPosition = Pos.fromPoint(startPos);
-            Chunk startChunk = instance.getChunk(endPos.chunkX(), endPos.chunkZ());
-            generatorLogger.info("New Start Room ({}, {})", startPos.chunkX(), startPos.chunkZ());
-            for (RoomDTO room : dtos) {
-                if (room.getRoomData().type().equals(RoomType.START_ROOM)) {
-                    buildRoom(endPos, room.getSchematicPath()); //Why endPos?
-                    oldStartRoomX = room.getRoomData().x();
-                    oldStartRoomZ = room.getRoomData().z();
+        this.units.forEach(generationUnit -> {
+            for (Map.Entry<Vec, Chunk> posChunks : generationUnit.getChunks().entrySet()) {
+                if (!ChunkUtils.isLoaded(posChunks.getValue())) {
+                    instance.loadChunk(posChunks.getKey());
                 }
             }
+        });
 
-            for (RoomDTO dto : dtos) {
-                if (dto.getRoomData().type() != RoomType.START_ROOM) {
-                    int chunkX = dto.getRoomData().x() - (oldStartRoomX - startChunk.getChunkX());
-                    chunkX += (chunkX - startChunk.getChunkX()) * (roomScale - 1);
+        if (this.units.isEmpty()) {
+            throw new IllegalArgumentException("NOPÜE");
+        }
 
-                    int chunkZ = dto.getRoomData().z() - (oldStartRoomZ - startChunk.getChunkZ());
-                    chunkZ += (chunkZ - startChunk.getChunkZ()) * (roomScale - 1);
+        for (GenerationUnit unit : units) {
+            buildRoom(unit.getOriginPoint(), unit.getSchematicPath());
+        }
+    }
 
-                    var newVec = new Vec(((endPos.blockX()) + (double) ((Chunk.CHUNK_SIZE_X) * chunkX)), startPos.blockY(), (endPos.blockZ()) + (double) (Chunk.CHUNK_SIZE_Z * chunkZ) + 1);
+    private void loadChunks(@NotNull Point startPos, @NotNull RoomData startRoom, @NotNull RoomDTO currentRoom) {
+        System.out.println("");
+        System.out.println("CurrentRoom is " + currentRoom.getRoomData());
+        int oldStartRoomX = startPos.blockX();
+        int oldStartRoomZ = startPos.blockZ();
 
-                    if (newVec.blockX() % 64 != 0 || newVec.blockZ() % 64 != 0) {
-                        generatorLogger.info("ChunkX is {}", chunkX);
-                        generatorLogger.info("ChunkZ is {}", chunkZ);
-                        generatorLogger.info("PosX is {}", startPos.blockX() + (16 * chunkX));
-                        generatorLogger.info("PosZ is {}", startPos.blockZ() + (16 * chunkZ));
-                    }
+        var roomUnit = new GenerationUnit();
 
-                    buildRoom(newVec, dto.getSchematicPath());
-                }
+        Vec roomVec;
+
+        if (startRoom.x() == currentRoom.getRoomData().x()) {
+            // Only update z?
+            int newStartZ = oldStartRoomZ + ((startRoom.z() - currentRoom.getRoomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+            roomVec = new Vec(startPos.blockX(), startPos.blockY(), newStartZ);
+            System.out.println("[X Equal] New position is " + roomVec);
+            //buildRoom(new Vec(startPos.blockX(), startPos.blockY(), newStartZ), currentRoom.getSchematicPath());
+        } else {
+            // The newStartX calculation must be positive otherwise the dungeon is mirrored
+            int newStartX = oldStartRoomX + ((startRoom.x() - currentRoom.getRoomData().x()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+            int newStartZ = oldStartRoomZ + ((startRoom.z() - currentRoom.getRoomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+            roomVec = new Vec(newStartX, startPos.blockY(), newStartZ);
+            System.out.println("[X Not] New position is " + roomVec);
+        }
+
+        roomUnit.setOriginPoint(roomVec);
+
+        Vec[] horizontalStartVecs = new Vec[roomScale];
+        horizontalStartVecs[0] = roomVec;
+        for (int i = 1; i < roomScale; i++) {
+            horizontalStartVecs[i] = roomVec.sub((i * Chunk.CHUNK_SECTION_SIZE), 0, 0);
+        }
+
+        Vec[] verticalStartVecs = new Vec[((roomScale - 1) * (roomScale))];
+        int index = 0; // Represents the index counter for the verticalStartVecs array
+
+        for (int horiIndex = 0; horiIndex < horizontalStartVecs.length; horiIndex++) {
+            var currentStartVec = horizontalStartVecs[horiIndex];
+            for (int vertiIndex = 1; vertiIndex < roomScale; vertiIndex++) {
+                verticalStartVecs[index++] = currentStartVec.add(0, 0, (vertiIndex * Chunk.CHUNK_SIZE_Z));
             }
         }
+
+        for (Vec verticalStartVec : verticalStartVecs) {
+            roomUnit.addChunk(verticalStartVec, instance.getChunkAt(verticalStartVec));
+            var block = switch (currentRoom.getRoomData().type()) {
+                case SHOP_ROOM -> Block.LIME_WOOL;
+                case NORMAL_ROOM -> Block.PURPLE_WOOL;
+                case START_ROOM -> Block.ORANGE_WOOL;
+                case DEAD_END -> Block.BLACK_WOOL;
+                case BOSS_ROOM -> Block.RED_WOOL;
+                case ITEM_ROOM -> Block.YELLOW_WOOL;
+                case TELEPORT_ROOM -> Block.BLUE_WOOL;
+            };
+            instance.setBlock(verticalStartVec.add(0, 2, 0), block);
+        }
+
+        for (Vec horizontalStartVec : horizontalStartVecs) {
+            roomUnit.addChunk(horizontalStartVec, instance.getChunkAt(horizontalStartVec));
+            instance.setBlock(horizontalStartVec.add(0, 2, 0), Block.RED_WOOL);
+        }
+
+        roomUnit.setSchematicPath(currentRoom.getSchematicPath());
+
+        this.units.add(roomUnit);
+        System.out.println("");
     }
 
     private void buildRoom(@NotNull Point position, @NotNull Path schematicPath) {
