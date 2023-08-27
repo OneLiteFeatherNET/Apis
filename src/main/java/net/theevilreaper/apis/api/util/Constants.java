@@ -1,4 +1,4 @@
-package net.theevilreaper.apis.api;
+package net.theevilreaper.apis.api.util;
 
 /**
  * @author Joltra
