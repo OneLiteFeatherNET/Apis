@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.theevilreaper.apis.api.Constants.*;
+import static net.theevilreaper.apis.api.util.Constants.*;
 
 /**
  * The class contains the base implementation of a dungeon generator.
@@ -160,9 +160,8 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * Returns the name for the generator.
      * @return the given name
      */
-    @NotNull
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
@@ -170,9 +169,8 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * Returns the array which includes all {@link RoomData} from the plan.
      * @return the given array
      */
-    @NotNull
     @Override
-    public RoomData[][] getFloorPlan() {
+    public @NotNull RoomData[][] getFloorPlan() {
         return floorPlan;
     }
 }
