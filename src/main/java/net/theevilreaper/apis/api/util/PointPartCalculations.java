@@ -17,6 +17,6 @@ public final class PointPartCalculations {
     }
 
     public static int calculateZPart(int oldStartRoomZ, int startRoomZ, int currentRoomZ, int roomScale) {
-        return oldStartRoomZ + ((startRoomZ -currentRoomZ) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+        return oldStartRoomZ + ((startRoomZ - currentRoomZ) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
     }
 }
