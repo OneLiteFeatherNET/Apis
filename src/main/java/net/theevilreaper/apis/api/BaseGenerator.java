@@ -6,6 +6,12 @@ import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.data.DoorFace;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.generator.functional.ChunkHandling;
+import net.theevilreaper.apis.api.generator.functional.OriginPointPartCalculation;
+import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
+import net.theevilreaper.apis.api.util.GenerationChunkHandling;
+import net.theevilreaper.apis.api.util.PointPartCalculations;
+import net.theevilreaper.apis.api.util.RoomSchematicPlacement;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +39,13 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
     protected final Path filePath;
     protected Instance instance;
     protected RoomData[][] floorPlan;
-    protected RoomData startRoom;
     protected List<RoomData> roomData;
     protected int roomScale = DEFAULT_ROOM_SIZE;
     private final String name;
+    protected SchematicPlacement roomPlacement;
+    protected OriginPointPartCalculation xPartCalculation;
+    protected OriginPointPartCalculation zPartCalculation;
+    protected ChunkHandling chunkHandling;
 
     /**
      * Creates a new instance of the class with the given values.
@@ -49,6 +58,10 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
         this.instance = instance;
         this.filePath = filePath;
         this.roomData = new ArrayList<>();
+        this.roomPlacement = RoomSchematicPlacement::placeRoom;
+        this.xPartCalculation = PointPartCalculations::calculateXPart;
+        this.zPartCalculation = PointPartCalculations::calculateZPart;
+        this.chunkHandling = GenerationChunkHandling::handleGenerationChunkLoading;
     }
 
     /**
@@ -60,6 +73,10 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
         this.name = name;
         this.filePath = filePath;
         this.roomData = new ArrayList<>();
+        this.roomPlacement = RoomSchematicPlacement::placeRoom;
+        this.xPartCalculation = PointPartCalculations::calculateXPart;
+        this.zPartCalculation = PointPartCalculations::calculateZPart;
+        this.chunkHandling = GenerationChunkHandling::handleGenerationChunkLoading;
     }
 
     /**
@@ -122,10 +139,6 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
                 }
 
                 var room = new RoomData(x ,y, roomType, doors);
-
-                if (startRoom == null) {
-                    startRoom = room;
-                }
 
                 this.floorPlan[y][x] = room;
                 this.roomData.add(room);
