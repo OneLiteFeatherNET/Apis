@@ -1,16 +1,19 @@
 package net.theevilreaper.apis.api.generator;
 
+import net.minestom.server.MinecraftServer;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
-import net.minestom.server.instance.Instance;
+import net.minestom.server.utils.validate.Check;
 import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.event.GeneratorFinishEvent;
 import net.theevilreaper.apis.api.generator.exception.GeneratorGenerationException;
 import net.theevilreaper.apis.api.generator.unit.RoomUnit;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
@@ -29,16 +32,9 @@ public class DungeonGeneratorImpl extends BaseGenerator {
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
     private final List<RoomUnit> units;
-    public DungeonGeneratorImpl(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
-        super(name, instance, filePath);
-        this.roomSchematicLoader = roomSchematicLoader;
-        this.dtos = new ArrayList<>();
-        generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
-        this.units = new ArrayList<>();
-    }
 
-    public DungeonGeneratorImpl(@NotNull String name, @NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
-        super(name, filePath);
+    public DungeonGeneratorImpl(@NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
+        super("Isaac", filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
@@ -65,28 +61,61 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
-        var startRoomOptional = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst();
+        Check.argCondition(instance == null, "The instance can't be null");
+        var chunkPos = verifyStartPosIntegrity(startPos);
 
-        if (startRoomOptional.isEmpty()) {
-            throw new GeneratorGenerationException("The floor plan contains no start room!");
-        }
-
-        var startRoom = startRoomOptional.get();
-
-        this.loadChunks(startPos, startRoom.getRoomData(), startRoom);
-        for (RoomDTO dto : dtos) {
-            this.loadChunks(startPos, startRoom.getRoomData(), dto);
+        if (startPos.blockX() != chunkPos.blockX() || startPos.blockZ() != chunkPos.blockZ()) {
+            startPos = chunkPos;
         }
 
         if (this.units.isEmpty()) {
-            throw new GeneratorGenerationException("Something wen't wrong during the chunk scanning!");
+            var startRoomOptional = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst();
+
+            if (startRoomOptional.isEmpty()) {
+                throw new GeneratorGenerationException("The floor plan contains no start room!");
+            }
+
+            var startRoom = startRoomOptional.get();
+
+            this.loadChunks(startPos, startRoom.getRoomData(), startRoom);
+            for (RoomDTO dto : dtos) {
+                this.loadChunks(startPos, startRoom.getRoomData(), dto);
+            }
+
+            if (this.units.isEmpty()) {
+                throw new GeneratorGenerationException("Something wen't wrong during the chunk scanning!");
+            }
+            this.units.forEach(roomUnit -> this.chunkHandling.handleChunks(instance, roomUnit.getChunks()));
         }
-        this.units.forEach(roomUnit -> this.chunkHandling.handleChunks(instance, roomUnit.getChunks()));
-        for (RoomUnit unit : units) {
-            this.roomPlacement.place(instance, unit.getOriginPoint(), unit.getSchematicPath());
-        }
+
+        new SchematicPlacementTask(this.instance, this.units, roomPlacement, () -> {
+            var finishEvent = new GeneratorFinishEvent(this.getName(), this.units);
+            MinecraftServer.getGlobalEventHandler().call(finishEvent);
+        });
     }
 
+    /**
+     * Determines the southwest position of a chunk.
+     * @param position the position to use
+     * @return the determined southwest position
+     */
+    @Contract(value = "_ -> new", pure = true)
+    private @NotNull Vec verifyStartPosIntegrity(@NotNull Point position) {
+        int startChunkX = position.chunkX();
+        int startChunkZ = position.chunkZ();
+
+        int southChunkX = (startChunkX << 4) + 15;
+        int southChunkZ = startChunkZ << 4;
+
+        return new Vec(southChunkX, position.blockY(), southChunkZ);
+    }
+
+    /**
+     * The method loads all chunks for a room when some of them are not loaded.
+     * @param startPos the position to start
+     * @param startRoom the {@link RoomData} reference from the start room
+     * @param currentRoom the {@link RoomDTO} from the current room
+     */
     private void loadChunks(@NotNull Point startPos, @NotNull RoomData startRoom, @NotNull RoomDTO currentRoom) {
         int oldStartRoomX = startPos.blockX();
         int oldStartRoomZ = startPos.blockZ();
