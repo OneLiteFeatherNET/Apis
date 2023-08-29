@@ -4,6 +4,7 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -33,7 +34,7 @@ public interface RoomUnit {
 
         @NotNull Builder setOriginPoint(@NotNull Vec vec);
 
-        @NotNull Builder addChunk(@NotNull Vec vec, @NotNull Chunk chunk);
+        @NotNull Builder addChunk(@NotNull Vec vec, @Nullable Chunk chunk);
 
         /**
          * Creates a new object reference of an {@link RoomUnit} implementation.
