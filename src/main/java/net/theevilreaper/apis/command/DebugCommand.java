@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.List;
 
-import static net.theevilreaper.apis.api.Constants.*;
+import static net.theevilreaper.apis.api.util.Constants.*;
 
 /**
  * @author theEvilReaper
@@ -45,7 +45,7 @@ public class DebugCommand extends Command {
         RoomSchematicLoader roomSchematicLoader = new RoomSchematicLoader(path);
         this.schematics = roomSchematicLoader.findSchematics();
         this.gen = ArgumentType.Literal("gen");
-        this.generate = new DungeonGeneratorImpl(null, floorPlanPath, roomSchematicLoader);
+        this.generate = new DungeonGeneratorImpl(floorPlanPath, roomSchematicLoader);
         this.schematicArgument = ArgumentType.String("schematic").setSuggestionCallback((sender, context, suggestion) -> {
             for (Path schematic : schematics) {
                 suggestion.addEntry(new SuggestionEntry(schematic.getFileName().toString(), Component.text("Schematic", NamedTextColor.WHITE)));
@@ -61,7 +61,7 @@ public class DebugCommand extends Command {
         if (commandSender instanceof Player player) {
             this.generate.setInstance(player.getInstance());
             this.generate.loadData();
-            this.generate.generate(player);
+            this.generate.generate(player.getPosition());
         }
     }
 
