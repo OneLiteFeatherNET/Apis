@@ -27,20 +27,20 @@ class DungeonGeneratorTest {
 
     @Test
     void testName() {
-        var generator = new DungeonGeneratorImpl("Isaac", null, null, null);
+        var generator = new DungeonGeneratorImpl( null, null);
         assertNotEquals("DungeonGenerator", generator.getName());
     }
 
     @Test
     void testSave() {
-        var generator = new DungeonGeneratorImpl("Isaac", null, null, null);
+        var generator = new DungeonGeneratorImpl(null, null);
         var exception = assertThrows(UnsupportedOperationException.class, generator::save);
         assertEquals("Not implemented yet", exception.getMessage());
     }
 
     @Test
     void testScaleSet() {
-        var generator = new DungeonGeneratorImpl("Isaac", null, null);
+        var generator = new DungeonGeneratorImpl( null, null);
         var exception = assertThrows(IllegalArgumentException.class, () -> generator.setRoomScale(12));
         assertSame("The given scale can not be higher than: " + DungeonGenerator.DEFAULT_CHUNK_SCALE, exception.getMessage());
     }

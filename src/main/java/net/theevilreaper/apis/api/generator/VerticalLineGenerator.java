@@ -31,7 +31,7 @@ public class VerticalLineGenerator extends BaseGenerator {
     private final List<RoomDTO> dtos;
 
     public VerticalLineGenerator(@NotNull Instance instance, @NotNull Path filePath, @NotNull RoomSchematicLoader roomSchematicLoader) {
-        super("Line", instance, filePath);
+        super("Line", filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);

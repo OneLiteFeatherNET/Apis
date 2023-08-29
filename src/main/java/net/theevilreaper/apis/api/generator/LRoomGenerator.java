@@ -6,6 +6,7 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
+import net.minestom.server.utils.validate.Check;
 import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
@@ -30,8 +31,8 @@ public class LRoomGenerator extends BaseGenerator {
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
 
-    public LRoomGenerator(@NotNull Instance instance, @NotNull Path filePath, @NotNull RoomSchematicLoader roomSchematicLoader) {
-        super("LGen", instance, filePath);
+    public LRoomGenerator(@NotNull Path filePath, @NotNull RoomSchematicLoader roomSchematicLoader) {
+        super("LGen", filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
         generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
@@ -57,6 +58,7 @@ public class LRoomGenerator extends BaseGenerator {
 
     @Override
     public void generate(@NotNull Point startPos) {
+        Check.argCondition(instance == null, "The instance can't be null");
         System.out.println("Generator variant is " + getName());
         System.out.println("Room size is " + this.dtos.size());
         System.out.println("Start position is " + startPos);
