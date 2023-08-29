@@ -3,7 +3,6 @@ package net.theevilreaper.apis.api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minestom.server.coordinate.Point;
-import net.minestom.server.entity.Player;
 import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @version 1.0.0
  * @since 1.0.0
  */
-public sealed interface DungeonGenerator permits BaseGenerator {
+public sealed interface DungeonGenerator extends LayoutParser permits BaseGenerator {
     Gson GSON = new GsonBuilder().create();
 
     int MAX_FLOOR_ID = 5;
@@ -38,23 +37,7 @@ public sealed interface DungeonGenerator permits BaseGenerator {
     void generate(@NotNull Point startPos);
 
     /**
-     * Generates the dungeon to the given position.
-     *
-     * @param player the player to generate the dungeon for.
-     */
-    default void generate(@NotNull Player player) {
-        var position = player.getPosition();
-        if (position.y() >= MAX_Y_HEIGHT) {
-            player.sendMessage("Y is to high");
-            return;
-        }
-        this.generate(position.asVec());
-        this.setInstance(player.getInstance());
-    }
-
-    /**
      * Saves the dungeon into a world folder.
-     *
      * Please note that the method is not implemented!!!
      */
     default void save() {
