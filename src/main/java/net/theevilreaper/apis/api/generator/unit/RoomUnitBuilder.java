@@ -3,6 +3,7 @@ package net.theevilreaper.apis.api.generator.unit;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -37,7 +38,7 @@ public non-sealed class RoomUnitBuilder implements RoomUnit.Builder {
     }
 
     @Override
-    public RoomUnit.@NotNull Builder addChunk(@NotNull Vec vec, @NotNull Chunk chunk) {
+    public RoomUnit.@NotNull Builder addChunk(@NotNull Vec vec, @Nullable Chunk chunk) {
         this.chunkMap.put(vec, chunk);
         return this;
     }
