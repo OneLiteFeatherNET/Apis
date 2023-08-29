@@ -1,11 +1,9 @@
 package net.theevilreaper.apis.api;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.instance.Instance;
-import net.theevilreaper.apis.api.data.DoorFace;
+import net.minestom.server.utils.validate.Check;
 import net.theevilreaper.apis.api.data.RoomData;
-import net.theevilreaper.apis.api.data.RoomType;
 import net.theevilreaper.apis.api.generator.functional.ChunkHandling;
 import net.theevilreaper.apis.api.generator.functional.OriginPointPartCalculation;
 import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
@@ -37,6 +35,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
 
     protected static Logger generatorLogger = LoggerFactory.getLogger(BaseGenerator.class);
     protected final Path filePath;
+
     protected Instance instance;
     protected RoomData[][] floorPlan;
     protected List<RoomData> roomData;
@@ -46,23 +45,6 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
     protected OriginPointPartCalculation xPartCalculation;
     protected OriginPointPartCalculation zPartCalculation;
     protected ChunkHandling chunkHandling;
-
-    /**
-     * Creates a new instance of the class with the given values.
-     * @param name the name from the generator
-     * @param instance the instance for the generator
-     * @param filePath the path to the file
-     */
-    protected BaseGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
-        this.name = name;
-        this.instance = instance;
-        this.filePath = filePath;
-        this.roomData = new ArrayList<>();
-        this.roomPlacement = RoomSchematicPlacement::placeRoom;
-        this.xPartCalculation = PointPartCalculations::calculateXPart;
-        this.zPartCalculation = PointPartCalculations::calculateZPart;
-        this.chunkHandling = GenerationChunkHandling::handleGenerationChunkLoading;
-    }
 
     /**
      * Creates a new instance of the class with the given values.
@@ -115,34 +97,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
                 throw new NullPointerException("The floor can not be empty");
             }
 
-            for (JsonElement jsonElement : floor) {
-                JsonObject asJsonObject = jsonElement.getAsJsonObject();
-                var x = asJsonObject.get(ROOM_X).getAsInt();
-                var y = asJsonObject.get(ROOM_Y).getAsInt();
-                var roomType = RoomType.getRoomType(asJsonObject.get(ROOM_TYPE).getAsInt());
-                var doorArray = asJsonObject.get(ROOM_DOORS).getAsJsonArray();
-
-                if (doorArray == null) {
-                    throw new NullPointerException("A room must have at least one door");
-                }
-
-                if (doorArray.isEmpty() && roomType != RoomType.BOSS_ROOM) {
-                    throw new IllegalArgumentException("Only a boss rom can have zero doors");
-                }
-
-                var doors = new DoorFace[doorArray.size()];
-                var counter = 0;
-
-                for (JsonElement element : doorArray) {
-                    doors[counter] = DoorFace.getFace(element.getAsInt());
-                    counter++;
-                }
-
-                var room = new RoomData(x ,y, roomType, doors);
-
-                this.floorPlan[y][x] = room;
-                this.roomData.add(room);
-            }
+            this.parseLayout(floor, this.roomData, this.floorPlan);
         } catch (IOException exception) {
             generatorLogger.warn("An exception occurred while loading floor plan", exception);
         }
@@ -163,9 +118,8 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      */
     @Override
     public void setRoomScale(int roomScale) {
-        if (roomScale > DEFAULT_CHUNK_SCALE) {
-            throw new IllegalArgumentException("The given scale can not be higher than: " + DEFAULT_CHUNK_SCALE);
-        }
+        Check.argCondition(roomScale % 2 != 0, "The scale must be within the range of a power of two");
+        Check.argCondition(roomScale > DEFAULT_CHUNK_SCALE, "The given scale can not be higher than: " + DEFAULT_CHUNK_SCALE);
         this.roomScale = roomScale;
     }
 
