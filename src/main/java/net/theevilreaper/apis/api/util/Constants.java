@@ -1,6 +1,7 @@
 package net.theevilreaper.apis.api.util;
 
 /**
+ * A util class which contains some constant value which are used for the layout mapping.
  * @author Joltra
  * @version 1.0.0
  * @since 1.0.0
