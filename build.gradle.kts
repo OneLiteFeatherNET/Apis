@@ -2,8 +2,7 @@ plugins {
     java
     jacoco
     `maven-publish`
-    id("org.sonarqube") version "4.3.0.3225"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    alias(libs.plugins.sonarqube)
 }
 
 group = "net.theevilreaper.apis"
@@ -36,10 +35,6 @@ tasks {
         filesMatching("extension.json") {
             expand(project.properties)
         }
-    }
-
-    jar {
-        dependsOn("shadowJar")
     }
 
     compileJava {
@@ -98,9 +93,7 @@ publishing {
             }
         }
     }
-
 }
-
 
 version = if (System.getenv().containsKey("CI")) {
     "${baseVersion}+${System.getenv("CI_COMMIT_SHORT_SHA")}"
