@@ -40,6 +40,7 @@ public sealed interface DungeonGenerator extends LayoutParser permits BaseGenera
      * Saves the dungeon into a world folder.
      * Please note that the method is not implemented!!!
      */
+    @Deprecated(forRemoval = true, since = "At the moment it's not planned to have a save method!")
     default void save() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
