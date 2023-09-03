@@ -1,16 +1,14 @@
-package net.theevilreaper.apis.api.generator;
+package net.theevilreaper.apis.api.generator.debug;
 
-import net.hollowcube.util.schem.Rotation;
-import net.hollowcube.util.schem.SchematicReader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
-import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.validate.Check;
 import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.generator.DungeonGeneratorImpl;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,7 @@ import java.util.List;
  * @since
  **/
 
-public class LRoomGenerator extends BaseGenerator {
+public final class LRoomGenerator extends BaseGenerator {
 
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
@@ -59,15 +57,11 @@ public class LRoomGenerator extends BaseGenerator {
     @Override
     public void generate(@NotNull Point startPos) {
         Check.argCondition(instance == null, "The instance can't be null");
-        System.out.println("Generator variant is " + getName());
-        System.out.println("Room size is " + this.dtos.size());
-        System.out.println("Start position is " + startPos);
         //Aktuelle Richtung für die Generation South und links unten hinstellen
         var startRoom = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst().get();
         this.dtos.remove(startRoom);
         System.out.println("After remove from start " + this.dtos.size());
-
-        buildRoom(startPos, startRoom.getSchematicPath());
+        this.roomPlacement.place(instance, startPos, startRoom.getSchematicPath());
 
         int oldStartRoomX = startPos.blockX();
         int oldStartRoomZ = startPos.blockZ();
@@ -76,20 +70,14 @@ public class LRoomGenerator extends BaseGenerator {
         // SOUT x -> neagtive z ins Positive
         for (int i = 0; i < this.dtos.size(); i++) {
             var currentRoom = this.dtos.get(i);
-            System.out.println("Current room in queue is " + currentRoom.getRoomData().type());
-            /*if (startRoom.getRoomData().x() != currentRoom.getRoomData().x()) {
-                // Only update z?
-
-                int newStartX = oldStartRoomX - ((startRoom.getRoomData().x() - currentRoom.getRoomData().x()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
-                System.out.println("New position is " + new Vec(newStartX, startPos.y(), startPos.z()));
-                buildRoom(new Vec(newStartX, startPos.y(), startPos.z()), currentRoom.getSchematicPath());
-            }*/
+            generatorLogger.debug("Current room in queue is {}",currentRoom.getRoomData().type());
             // Trivial case
             if (startRoom.getRoomData().x() == currentRoom.getRoomData().x()) {
                 // Only update z?
                 int newStartZ = oldStartRoomZ + ((startRoom.getRoomData().z() - currentRoom.getRoomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
-                System.out.println("New position is " + new Vec(startPos.blockX(), startPos.blockY(), newStartZ));
-                buildRoom(new Vec(startPos.blockX(), startPos.blockY(), newStartZ), currentRoom.getSchematicPath());
+                var position = new Vec(startPos.blockX(), startPos.blockY(), newStartZ);
+                generatorLogger.debug("New position is {}", position);
+                this.roomPlacement.place(instance, position, currentRoom.getSchematicPath());
                 continue;
             }
 
@@ -98,20 +86,9 @@ public class LRoomGenerator extends BaseGenerator {
 
             var newPos = new Vec(newStartX, startPos.blockY(), newStartZ);
 
-            System.out.println("[1] New position is" + newPos);
+            generatorLogger.debug("[1] New position is {}", newPos);
 
-            buildRoom(newPos, currentRoom.getSchematicPath());
+            this.roomPlacement.place(instance, newPos, currentRoom.getSchematicPath());
         }
-    }
-
-    private void buildRoom(@NotNull Point position, @NotNull Path schematicPath) {
-        var schematic = SchematicReader.read(schematicPath);
-        if (instance.getChunkAt(position) == null) {
-            instance.loadChunk(position.chunkX(), position.chunkZ());
-        }
-
-        schematic.build(Rotation.NONE, null).apply(instance, position, () -> {
-            generatorLogger.info("Schematic successfully placed");
-        });
     }
 }
