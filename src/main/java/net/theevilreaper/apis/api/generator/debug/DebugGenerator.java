@@ -1,10 +1,11 @@
-package net.theevilreaper.apis.api;
+package net.theevilreaper.apis.api.generator.debug;
 
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.coordinate.Pos;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.batch.ChunkBatch;
 import net.minestom.server.instance.block.Block;
+import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 
-public class DebugGenerator extends BaseGenerator {
+@SuppressWarnings({"java:S3252"})
+public final class DebugGenerator extends BaseGenerator {
 
     private static final Block START_ROOM = Block.ORANGE_CONCRETE;
     private static final Block NORMAL_ROOM = Block.GRAY_CONCRETE;
@@ -20,8 +22,8 @@ public class DebugGenerator extends BaseGenerator {
     private static final Block SHOP_ROOM = Block.YELLOW_CONCRETE;
     private static final Block ITEM_ROOM = Block.GREEN_CONCRETE;
 
-    public DebugGenerator(@NotNull String name, @NotNull Path filePath) {
-        super(name, filePath);
+    public DebugGenerator(@NotNull Path filePath) {
+        super("Debug", filePath);
         generatorLogger = LoggerFactory.getLogger(DebugGenerator.class);
     }
 

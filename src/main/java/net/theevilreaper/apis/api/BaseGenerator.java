@@ -1,11 +1,15 @@
 package net.theevilreaper.apis.api;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minestom.server.instance.Instance;
-import net.theevilreaper.apis.api.data.DoorFace;
+import net.minestom.server.utils.validate.Check;
 import net.theevilreaper.apis.api.data.RoomData;
-import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.generator.functional.ChunkHandling;
+import net.theevilreaper.apis.api.generator.functional.OriginPointPartCalculation;
+import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
+import net.theevilreaper.apis.api.util.GenerationChunkHandling;
+import net.theevilreaper.apis.api.util.PointPartCalculations;
+import net.theevilreaper.apis.api.util.RoomSchematicPlacement;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.theevilreaper.apis.api.Constants.*;
+import static net.theevilreaper.apis.api.util.Constants.*;
 
 /**
  * The class contains the base implementation of a dungeon generator.
@@ -31,25 +35,16 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
 
     protected static Logger generatorLogger = LoggerFactory.getLogger(BaseGenerator.class);
     protected final Path filePath;
+
     protected Instance instance;
     protected RoomData[][] floorPlan;
-    protected RoomData startRoom;
     protected List<RoomData> roomData;
     protected int roomScale = DEFAULT_ROOM_SIZE;
     private final String name;
-
-    /**
-     * Creates a new instance of the class with the given values.
-     * @param name the name from the generator
-     * @param instance the instance for the generator
-     * @param filePath the path to the file
-     */
-    protected BaseGenerator(@NotNull String name, @NotNull Instance instance, @NotNull Path filePath) {
-        this.name = name;
-        this.instance = instance;
-        this.filePath = filePath;
-        this.roomData = new ArrayList<>();
-    }
+    protected SchematicPlacement roomPlacement;
+    protected OriginPointPartCalculation xPartCalculation;
+    protected OriginPointPartCalculation zPartCalculation;
+    protected ChunkHandling chunkHandling;
 
     /**
      * Creates a new instance of the class with the given values.
@@ -60,6 +55,10 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
         this.name = name;
         this.filePath = filePath;
         this.roomData = new ArrayList<>();
+        this.roomPlacement = RoomSchematicPlacement::placeRoom;
+        this.xPartCalculation = PointPartCalculations::calculateXPart;
+        this.zPartCalculation = PointPartCalculations::calculateZPart;
+        this.chunkHandling = GenerationChunkHandling::handleGenerationChunkLoading;
     }
 
     /**
@@ -74,62 +73,31 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
         try (var reader = new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8)) {
             JsonObject entry = GSON.fromJson(reader, JsonObject.class);
 
-            if (!entry.has("height")) {
+            if (!entry.has(HEIGHT)) {
                 throw new NullPointerException("The height attribute is missing");
             }
 
-            var height = entry.get("height").getAsInt();
+            var height = entry.get(HEIGHT).getAsInt();
 
-            if (!entry.has("width")) {
+            if (!entry.has(WIDTH)) {
                 throw new NullPointerException("The width attribute is missing");
             }
 
-            var width = entry.get("width").getAsInt();
+            var width = entry.get(WIDTH).getAsInt();
 
             this.floorPlan = new RoomData[height][width];
 
-            if (!entry.has("floor")) {
+            if (!entry.has(FLOOR)) {
                 throw new NullPointerException("The floor attribute is missing");
             }
 
-            var floor = entry.get("floor").getAsJsonArray();
+            var floor = entry.get(FLOOR).getAsJsonObject().get("_rooms").getAsJsonArray();
 
             if (floor.isEmpty()) {
                 throw new NullPointerException("The floor can not be empty");
             }
 
-            for (JsonElement jsonElement : floor) {
-                JsonObject asJsonObject = jsonElement.getAsJsonObject();
-                var x = asJsonObject.get(ROOM_X).getAsInt();
-                var y = asJsonObject.get(ROOM_Y).getAsInt();
-                var roomType = RoomType.getRoomType(asJsonObject.get(ROOM_TYPE).getAsInt());
-                var doorArray = asJsonObject.get(ROOM_DOORS).getAsJsonArray();
-
-                if (doorArray == null) {
-                    throw new NullPointerException("A room must have at least one door");
-                }
-
-                if (doorArray.isEmpty() && roomType != RoomType.BOSS_ROOM) {
-                    throw new IllegalArgumentException("Only a boss rom can have zero doors");
-                }
-
-                var doors = new DoorFace[doorArray.size()];
-                var counter = 0;
-
-                for (JsonElement element : doorArray) {
-                    doors[counter] = DoorFace.getFace(element.getAsInt());
-                    counter++;
-                }
-
-                var room = new RoomData(x ,y, roomType, doors);
-
-                if (startRoom == null) {
-                    startRoom = room;
-                }
-
-                this.floorPlan[y][x] = room;
-                this.roomData.add(room);
-            }
+            this.parseLayout(floor, this.roomData, this.floorPlan);
         } catch (IOException exception) {
             generatorLogger.warn("An exception occurred while loading floor plan", exception);
         }
@@ -150,9 +118,8 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      */
     @Override
     public void setRoomScale(int roomScale) {
-        if (roomScale > DEFAULT_CHUNK_SCALE) {
-            throw new IllegalArgumentException("The given scale can not be higher than: " + DEFAULT_CHUNK_SCALE);
-        }
+        Check.argCondition(roomScale % 2 != 0, "The scale must be within the range of a power of two");
+        Check.argCondition(roomScale > DEFAULT_CHUNK_SCALE, "The given scale can not be higher than: " + DEFAULT_CHUNK_SCALE);
         this.roomScale = roomScale;
     }
 
@@ -160,9 +127,8 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * Returns the name for the generator.
      * @return the given name
      */
-    @NotNull
     @Override
-    public String getName() {
+    public @NotNull String getName() {
         return name;
     }
 
@@ -170,9 +136,8 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * Returns the array which includes all {@link RoomData} from the plan.
      * @return the given array
      */
-    @NotNull
     @Override
-    public RoomData[][] getFloorPlan() {
+    public @NotNull RoomData[][] getFloorPlan() {
         return floorPlan;
     }
 }

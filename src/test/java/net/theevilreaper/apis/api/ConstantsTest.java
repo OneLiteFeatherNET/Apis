@@ -1,5 +1,6 @@
 package net.theevilreaper.apis.api;
 
+import net.theevilreaper.apis.api.util.Constants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

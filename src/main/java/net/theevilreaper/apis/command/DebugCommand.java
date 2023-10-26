@@ -12,8 +12,8 @@ import net.minestom.server.command.builder.arguments.ArgumentType;
 import net.minestom.server.command.builder.suggestion.SuggestionEntry;
 import net.minestom.server.entity.Player;
 import net.theevilreaper.apis.api.DungeonGenerator;
-import net.theevilreaper.apis.api.DungeonGeneratorImpl;
 import net.theevilreaper.apis.api.data.RoomType;
+import net.theevilreaper.apis.api.generator.DungeonGeneratorImpl;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.List;
 
-import static net.theevilreaper.apis.api.Constants.*;
+import static net.theevilreaper.apis.api.util.Constants.*;
 
 /**
  * @author theEvilReaper
@@ -35,19 +35,17 @@ import static net.theevilreaper.apis.api.Constants.*;
 public class DebugCommand extends Command {
 
     private final Argument<String> schematicArgument;
-
     private final ArgumentEnum<RoomType> roomArgument;
     private final ArgumentLiteral gen;
-
     private final DungeonGenerator generate;
     private final List<Path> schematics;
 
     public DebugCommand(@NotNull Path floorPlanPath, @NotNull Path path) {
-        super("test", "t");
+        super("gen", "g");
         RoomSchematicLoader roomSchematicLoader = new RoomSchematicLoader(path);
         this.schematics = roomSchematicLoader.findSchematics();
         this.gen = ArgumentType.Literal("gen");
-        this.generate = new DungeonGeneratorImpl("Debug", floorPlanPath, roomSchematicLoader);
+        this.generate = new DungeonGeneratorImpl(floorPlanPath, roomSchematicLoader);
         this.schematicArgument = ArgumentType.String("schematic").setSuggestionCallback((sender, context, suggestion) -> {
             for (Path schematic : schematics) {
                 suggestion.addEntry(new SuggestionEntry(schematic.getFileName().toString(), Component.text("Schematic", NamedTextColor.WHITE)));
@@ -61,8 +59,9 @@ public class DebugCommand extends Command {
 
     private void gen(@NotNull CommandSender commandSender, @NotNull CommandContext commandContext) {
         if (commandSender instanceof Player player) {
+            this.generate.setInstance(player.getInstance());
             this.generate.loadData();
-            this.generate.generate(player);
+            this.generate.generate(player.getPosition());
         }
     }
 

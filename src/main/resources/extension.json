@@ -1,5 +1,0 @@
-{
-  "entrypoint": "net.theevilreaper.apis.GeneratorExtension",
-  "name": "Apis",
-  "version": "${project.version}"
-}
