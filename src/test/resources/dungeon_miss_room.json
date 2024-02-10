@@ -1,12 +1,12 @@
 {
-  "seed": "3d79588278fde8f376ab0f6e03ee7ab0",
-  "width": 9,
-  "height": 8,
-  "floor": [{
-    "_Room__id": 0,
-    "_Room__x": 6,
-    "_Room__y": 0,
-    "doors": [],
-    "room_type": 4
-  }]
+  "_seed": "3d79588278fde8f376ab0f6e03ee7ab0",
+  "_width": 9,
+  "_height": 8,
+  "_floor": {
+    "_id": 0,
+    "_x": 6,
+    "_y": 0,
+    "_doors": [],
+    "_type": 4
+  }
 }
