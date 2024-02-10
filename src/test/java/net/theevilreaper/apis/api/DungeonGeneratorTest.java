@@ -32,13 +32,6 @@ class DungeonGeneratorTest {
     }
 
     @Test
-    void testSave() {
-        var generator = new DungeonGeneratorImpl(null, null);
-        var exception = assertThrows(UnsupportedOperationException.class, generator::save);
-        assertEquals("Not implemented yet", exception.getMessage());
-    }
-
-    @Test
     void testScaleSet() {
         var generator = new DungeonGeneratorImpl( null, null);
         var exception = assertThrows(IllegalArgumentException.class, () -> generator.setRoomScale(12));
