@@ -93,7 +93,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
 
             var floor = entry.get(FLOOR).getAsJsonObject().get("_rooms").getAsJsonArray();
 
-            if (floor.isEmpty()) {
+            if (floor == null || floor.isEmpty()) {
                 throw new NullPointerException("The floor can not be empty");
             }
 
