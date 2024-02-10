@@ -3,12 +3,15 @@ rootProject.name = "apis"
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            library("minestom", "net.onelitefeather.microtus", "Minestom").version("1.1.0")
-            library("minestom-test", "net.onelitefeather.microtus.testing", "testing").version("1.1.0")
-            library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").version("5.10.0")
-            library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").version("5.10.0")
-            library("mockito-core", "org.mockito", "mockito-core").version("5.4.0")
-            library("mockito-junit", "org.mockito", "mockito-junit-jupiter").version("5.4.0")
+            version("mockito", "5.9.0")
+            version("junit", "5.10.2")
+            version("minestom", "1.1.1")
+            library("minestom", "net.onelitefeather.microtus", "Minestom").versionRef("minestom")
+            library("minestom-test", "net.onelitefeather.microtus.testing", "testing").versionRef("minestom")
+            library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").versionRef("junit")
+            library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("junit")
+            library("mockito-core", "org.mockito", "mockito-core").versionRef("mockito")
+            library("mockito-junit", "org.mockito", "mockito-junit-jupiter").versionRef("mockito")
             library("schem", "com.github.hollow-cube.common", "schem").version("db5eab9512")
 
             plugin("sonarqube", "org.sonarqube").version("4.3.0.3225")
