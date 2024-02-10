@@ -165,12 +165,4 @@ public class DungeonGeneratorImpl extends BaseGenerator {
 
         this.units.add(roomUnit.build());
     }
-
-    /**
-     * Implementation of the save method to save a dungeon into the world folder.
-     */
-    @Override
-    public void save() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
 }
