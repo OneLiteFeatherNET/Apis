@@ -1,5 +1,7 @@
 package net.theevilreaper.apis.api.data;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * The enum contains all room types that currently exist.
  * The types provide a clear distinction as to which room is involved.
@@ -42,7 +44,7 @@ public enum RoomType {
      * @param id the id to check
      * @return the given type if it exists, NORMAL_ROOM otherwise
      */
-    public static RoomType getRoomType(int id) {
+    public static @NotNull RoomType getRoomType(int id) {
         return id > values.length ? NORMAL_ROOM : values[id];
     }
 }

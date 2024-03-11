@@ -10,7 +10,6 @@ import java.nio.file.Path;
  * @since 1.0.0
  **/
 public class RoomDTO {
-
     private final RoomData roomData;
     private final Path schematicPath;
     private final Path regionPath;

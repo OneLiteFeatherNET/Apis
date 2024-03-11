@@ -1,5 +1,6 @@
 package net.theevilreaper.apis.api.data;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,7 +24,7 @@ public enum DoorFace {
      * @param id the id for the door
      * @param name the name for the door
      */
-    DoorFace(int id, String name) {
+    DoorFace(int id, @NotNull String name) {
         this.id = id;
         this.name = name;
     }
@@ -49,8 +50,8 @@ public enum DoorFace {
      * @param id the id from the door
      * @return the fetched entry or null
      */
-    @Nullable
-    public static DoorFace getFace(int id) {
+    public static @Nullable DoorFace getFace(int id) {
+        if (id < 0 || id >= VALUES.length) return null;
         return VALUES[id];
     }
 }
