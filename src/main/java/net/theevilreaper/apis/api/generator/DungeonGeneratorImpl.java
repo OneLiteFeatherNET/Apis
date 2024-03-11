@@ -27,7 +27,7 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class DungeonGeneratorImpl extends BaseGenerator {
+public final class DungeonGeneratorImpl extends BaseGenerator {
 
     private final RoomSchematicLoader roomSchematicLoader;
     private final List<RoomDTO> dtos;
