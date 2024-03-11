@@ -85,7 +85,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
             if (this.units.isEmpty()) {
                 throw new GeneratorGenerationException("Something wen't wrong during the chunk scanning!");
             }
-            this.units.forEach(roomUnit -> this.chunkHandling.handleChunks(instance, roomUnit.getChunks()));
+            this.units.forEach(roomUnit -> this.chunkHandling.handleChunks(instance, roomUnit.chunks()));
         }
 
         new SchematicPlacementTask(this.instance, this.units, roomPlacement, () -> {
