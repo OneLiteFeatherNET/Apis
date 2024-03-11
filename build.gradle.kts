@@ -10,8 +10,9 @@ val baseVersion = "0.1.0-SNAPSHOT"
 val sonarKey = "dungeon_projects_apis_AYKTgGApdAa6ziWsmL8y"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
 }
 
 repositories {
