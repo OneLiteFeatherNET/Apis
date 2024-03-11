@@ -2,10 +2,12 @@ package net.theevilreaper.apis.api;
 
 import com.google.gson.JsonObject;
 import net.theevilreaper.apis.api.generator.DungeonGeneratorImpl;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Test the dungeon generator")
 class DungeonGeneratorTest {
 
     @Test

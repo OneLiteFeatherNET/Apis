@@ -1,9 +1,11 @@
 package net.theevilreaper.apis.api.data;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Test door face enum handling")
 class DoorFaceTest {
 
     @Test
@@ -21,5 +23,4 @@ class DoorFaceTest {
         assertEquals(DoorFace.UP, DoorFace.getFace(0));
         assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> DoorFace.getFace(4));
     }
-
 }
