@@ -12,7 +12,7 @@ import java.util.Objects;
  * @version 1.0.0
  * @since 1.0.0
  **/
-public record RoomData(int x, int z, RoomType type, DoorFace... doors) {
+public record RoomData(int x, int z, @NotNull RoomType type, DoorFace... doors) {
 
     @Override
     public boolean equals(Object o) {
