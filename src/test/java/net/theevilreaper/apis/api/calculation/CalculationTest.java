@@ -2,8 +2,10 @@ package net.theevilreaper.apis.api.calculation;
 
 import net.minestom.server.coordinate.Vec;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("Test some position calculations")
 class CalculationTest {
 
     static final Vec START_POS = new Vec(0);

@@ -1,9 +1,11 @@
 package net.theevilreaper.apis.api.data;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Test room type enum handling")
 class RoomTypeTest {
 
     @Test
