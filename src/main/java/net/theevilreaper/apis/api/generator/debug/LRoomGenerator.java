@@ -60,7 +60,7 @@ public final class LRoomGenerator extends BaseGenerator {
         //Aktuelle Richtung für die Generation South und links unten hinstellen
         var startRoom = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst().get();
         this.dtos.remove(startRoom);
-        System.out.println("After remove from start " + this.dtos.size());
+        generatorLogger.info("After remove from start {}", this.dtos.size());
         this.roomPlacement.place(instance, startPos, startRoom.getSchematicPath());
 
         int oldStartRoomX = startPos.blockX();
