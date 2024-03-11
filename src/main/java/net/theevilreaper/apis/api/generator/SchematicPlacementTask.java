@@ -62,6 +62,6 @@ public final class SchematicPlacementTask implements Runnable {
         }
 
         var room = this.roomQueue.poll();
-        this.schematicPlacement.place(this.instance, room.getOriginPoint(), room.getSchematicPath());
+        this.schematicPlacement.place(this.instance, room.originPoint(), room.schematicPath());
     }
 }

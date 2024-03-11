@@ -22,11 +22,11 @@ public interface RoomUnit {
         return new RoomUnitBuilder();
     }
 
-    @NotNull Path getSchematicPath();
+    @NotNull Path schematicPath();
 
-    @NotNull Vec getOriginPoint();
+    @NotNull Vec originPoint();
 
-    @NotNull Map<Vec, Chunk> getChunks();
+    @NotNull Map<Vec, Chunk> chunks();
 
     sealed interface Builder permits RoomUnitBuilder {
 
