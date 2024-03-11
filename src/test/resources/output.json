@@ -1,8 +1,8 @@
 {
-  "seed": "3d79588278fde8f376ab0f6e03ee7ab0",
-  "width": 9,
-  "height": 8,
-  "floor": [
+  "_seed": "3d79588278fde8f376ab0f6e03ee7ab0",
+  "_width": 9,
+  "_height": 8,
+  "_floor": [
     {
       "_id": 0,
       "_x": 6,
