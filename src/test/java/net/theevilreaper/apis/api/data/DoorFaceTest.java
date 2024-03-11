@@ -21,6 +21,6 @@ class DoorFaceTest {
     @Test
     void testGetFace() {
         assertEquals(DoorFace.UP, DoorFace.getFace(0));
-        assertThrowsExactly(ArrayIndexOutOfBoundsException.class, () -> DoorFace.getFace(4));
+        assertNull(DoorFace.getFace(4));
     }
 }
