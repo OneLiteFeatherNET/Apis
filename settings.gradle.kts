@@ -3,9 +3,9 @@ rootProject.name = "apis"
 dependencyResolutionManagement {
     versionCatalogs {
         create("libs") {
-            version("mockito", "5.9.0")
+            version("mockito", "5.11.0")
             version("junit", "5.10.2")
-            version("minestom", "1.1.1")
+            version("minestom", "1.3.1")
             library("minestom", "net.onelitefeather.microtus", "Minestom").versionRef("minestom")
             library("minestom-test", "net.onelitefeather.microtus.testing", "testing").versionRef("minestom")
             library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").versionRef("junit")
