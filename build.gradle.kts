@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.theevilreaper.apis"
-val baseVersion = "0.1.0-SNAPSHOT"
+val baseVersion = "0.2.0-SNAPSHOT"
 val sonarKey = "dungeon_projects_apis_AYKTgGApdAa6ziWsmL8y"
 
 java {
