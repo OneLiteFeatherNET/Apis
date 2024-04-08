@@ -4,6 +4,7 @@ import net.hollowcube.util.schem.Rotation;
 import net.hollowcube.util.schem.SchematicReader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ import java.nio.file.Path;
  * @version 1.0.0
  * @since 1.0.0
  **/
+@ApiStatus.NonExtendable
 public final class RoomSchematicPlacement {
 
     private RoomSchematicPlacement() { }

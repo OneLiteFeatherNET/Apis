@@ -3,6 +3,7 @@ package net.theevilreaper.apis.api.loader;
 import net.theevilreaper.apis.api.util.Constants;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -27,10 +28,12 @@ import static net.theevilreaper.apis.api.util.Constants.SCHEMATIC_FILE;
 /**
  * The class contains the main logic to load the schematic
  * and region files for the dungeon generation from a given path.
+ *
  * @author theEvilReaper
  * @version 1.0.0
  * @since 1.0.0
  **/
+@ApiStatus.NonExtendable
 public final class RoomSchematicLoader {
 
     private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
@@ -39,6 +42,7 @@ public final class RoomSchematicLoader {
 
     /**
      * Creates a new instance of the class.
+     *
      * @param basePath the path which contains the files for the generation
      */
     public RoomSchematicLoader(@NotNull Path basePath) {
@@ -47,6 +51,7 @@ public final class RoomSchematicLoader {
 
     /**
      * Search for all files in the folder which ends with {@link Constants#REGION_FILE}.
+     *
      * @return the list which contains the files
      */
     @NotNull
@@ -61,6 +66,7 @@ public final class RoomSchematicLoader {
 
     /**
      * Search for all files in the folder which ends with {@link Constants#SCHEMATIC_FILE}.
+     *
      * @return the list which contains the files
      */
     public List<Path> findSchematics() {
@@ -74,6 +80,7 @@ public final class RoomSchematicLoader {
 
     /**
      * Maps the schematics by a given list which contains the region files.
+     *
      * @param paths the list which contains the region files
      * @return a {@link Map} which contains the mapped data
      */
@@ -91,7 +98,8 @@ public final class RoomSchematicLoader {
 
     /**
      * Returns a {@link RoomDTO} reference by the id from the room.
-     * @param roomData a reference from a {@link RoomData}
+     *
+     * @param roomData    a reference from a {@link RoomData}
      * @param mappedFiles a map which contains the path from the schematic and region file
      * @return the created {@link RoomDTO} reference
      * @throws IOException if something went wrong
@@ -105,7 +113,7 @@ public final class RoomSchematicLoader {
             ByteBuffer allocate = ByteBuffer.allocate(view.size("dungeon.roomtype"));
             view.read("dungeon.roomtype", allocate);
             allocate.flip();
-            var roomType= Integer.parseInt(new String(allocate.array(), StandardCharsets.UTF_8));
+            var roomType = Integer.parseInt(new String(allocate.array(), StandardCharsets.UTF_8));
             /*var roomRotation = Files.getAttribute(key, "RoomRotation");*/
             if (roomData.type().getId() == roomType) {
                 result = new RoomDTO(roomData, entry.getValue(), key);
@@ -116,6 +124,7 @@ public final class RoomSchematicLoader {
 
     /**
      * Returns a boolean if the given path points to a region file.
+     *
      * @param path the path to check
      * @return True if the path points to a region file otherwise false
      */
@@ -125,6 +134,7 @@ public final class RoomSchematicLoader {
 
     /**
      * Returns a boolean if the given path points to a schematic file.
+     *
      * @param path the path to check
      * @return True if the path points to a schematic file otherwise false
      */
