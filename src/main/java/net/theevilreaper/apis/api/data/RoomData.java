@@ -40,42 +40,42 @@ public record RoomData(int x, int z, @NotNull RoomType type, DoorFace... doors) 
     }
 
     /**
-     * Returns true if the given type is {@link RoomType#START_ROOM}
+     * Returns true if the given type is {@link RoomType#START}
      * @return true or false
      */
     public boolean isStart() {
-        return this.type == RoomType.START_ROOM;
+        return this.type == RoomType.START;
     }
 
     /**
-     * Returns true if the given type is {@link RoomType#SHOP_ROOM}
+     * Returns true if the given type is {@link RoomType#SHOP}
      * @return true or false
      */
     public boolean isShop() {
-        return this.type == RoomType.SHOP_ROOM;
+        return this.type == RoomType.SHOP;
     }
 
     /**
-     * Returns true if the given type is {@link RoomType#BOSS_ROOM}
+     * Returns true if the given type is {@link RoomType#BOSS}
      * @return true or false
      */
     public boolean isBoss() {
-        return this.type == RoomType.BOSS_ROOM;
+        return this.type == RoomType.BOSS;
     }
 
     /**
-     * Returns true if the given type is {@link RoomType#TELEPORT_ROOM}
+     * Returns true if the given type is {@link RoomType#TELEPORT}
      * @return true or false
      */
     public boolean isTeleport() {
-        return this.type == RoomType.TELEPORT_ROOM;
+        return this.type == RoomType.TELEPORT;
     }
 
     /**
-     * Returns true if the given type is {@link RoomType#ITEM_ROOM}
+     * Returns true if the given type is {@link RoomType#ITEM}
      * @return true or false
      */
     public boolean isItem() {
-        return this.type == RoomType.ITEM_ROOM;
+        return this.type == RoomType.ITEM;
     }
 }

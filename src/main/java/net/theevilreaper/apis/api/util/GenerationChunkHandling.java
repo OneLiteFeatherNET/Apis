@@ -4,6 +4,7 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.chunk.ChunkUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @version 1.0.0
  * @since 1.0.0
  **/
+@ApiStatus.NonExtendable
 public final class GenerationChunkHandling {
 
     private GenerationChunkHandling() {}

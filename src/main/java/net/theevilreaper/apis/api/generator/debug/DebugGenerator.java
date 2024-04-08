@@ -38,7 +38,7 @@ public final class DebugGenerator extends BaseGenerator {
             buildRoom(startChunk.getChunkX(), startChunk.getChunkZ(), START_ROOM, playerPosition.blockY());
 
             for (RoomData room : roomData) {
-                if (room.type().equals(RoomType.START_ROOM)) {
+                if (room.type().equals(RoomType.START)) {
                     oldStartRoomX = room.x();
                     oldStartRoomZ = room.z();
                 }
@@ -47,7 +47,7 @@ public final class DebugGenerator extends BaseGenerator {
             generatorLogger.info("Old Start Room ({}, {})", oldStartRoomX, oldStartRoomZ);
 
             for (RoomData room : roomData) {
-                if (room.type() != RoomType.START_ROOM) {
+                if (room.type() != RoomType.START) {
                     int chunkX = room.x() - (oldStartRoomX - startChunk.getChunkX());
                     chunkX +=  (chunkX - startChunk.getChunkX()) * (roomScale - 1);
 

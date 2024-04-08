@@ -58,10 +58,10 @@ public final class LRoomGenerator extends BaseGenerator {
     public void generate(@NotNull Point startPos) {
         Check.argCondition(instance == null, "The instance can't be null");
         //Aktuelle Richtung für die Generation South und links unten hinstellen
-        var startRoom = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst().get();
+        var startRoom = dtos.stream().filter(roomDTO -> roomDTO.roomData().type() == RoomType.START).findFirst().get();
         this.dtos.remove(startRoom);
         generatorLogger.info("After remove from start {}", this.dtos.size());
-        this.roomPlacement.place(instance, startPos, startRoom.getSchematicPath());
+        this.roomPlacement.place(instance, startPos, startRoom.schematicPath());
 
         int oldStartRoomX = startPos.blockX();
         int oldStartRoomZ = startPos.blockZ();
@@ -70,25 +70,25 @@ public final class LRoomGenerator extends BaseGenerator {
         // SOUT x -> neagtive z ins Positive
         for (int i = 0; i < this.dtos.size(); i++) {
             var currentRoom = this.dtos.get(i);
-            generatorLogger.debug("Current room in queue is {}",currentRoom.getRoomData().type());
+            generatorLogger.debug("Current room in queue is {}",currentRoom.roomData().type());
             // Trivial case
-            if (startRoom.getRoomData().x() == currentRoom.getRoomData().x()) {
+            if (startRoom.roomData().x() == currentRoom.roomData().x()) {
                 // Only update z?
-                int newStartZ = oldStartRoomZ + ((startRoom.getRoomData().z() - currentRoom.getRoomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+                int newStartZ = oldStartRoomZ + ((startRoom.roomData().z() - currentRoom.roomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
                 var position = new Vec(startPos.blockX(), startPos.blockY(), newStartZ);
                 generatorLogger.debug("New position is {}", position);
-                this.roomPlacement.place(instance, position, currentRoom.getSchematicPath());
+                this.roomPlacement.place(instance, position, currentRoom.schematicPath());
                 continue;
             }
 
-            int newStartX = oldStartRoomX - ((startRoom.getRoomData().x() - currentRoom.getRoomData().x()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
-            int newStartZ = oldStartRoomZ + ((startRoom.getRoomData().z() - currentRoom.getRoomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+            int newStartX = oldStartRoomX - ((startRoom.roomData().x() - currentRoom.roomData().x()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+            int newStartZ = oldStartRoomZ + ((startRoom.roomData().z() - currentRoom.roomData().z()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
 
             var newPos = new Vec(newStartX, startPos.blockY(), newStartZ);
 
             generatorLogger.debug("[1] New position is {}", newPos);
 
-            this.roomPlacement.place(instance, newPos, currentRoom.getSchematicPath());
+            this.roomPlacement.place(instance, newPos, currentRoom.schematicPath());
         }
     }
 }

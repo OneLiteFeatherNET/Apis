@@ -69,7 +69,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
         }
 
         if (this.units.isEmpty()) {
-            var startRoomOptional = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst();
+            var startRoomOptional = dtos.stream().filter(roomDTO -> roomDTO.roomData().type() == RoomType.START).findFirst();
 
             if (startRoomOptional.isEmpty()) {
                 throw new GeneratorGenerationException("The floor plan contains no start room!");
@@ -77,9 +77,9 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
 
             var startRoom = startRoomOptional.get();
 
-            this.loadChunks(startPos, startRoom.getRoomData(), startRoom);
+            this.loadChunks(startPos, startRoom.roomData(), startRoom);
             for (RoomDTO dto : dtos) {
-                this.loadChunks(startPos, startRoom.getRoomData(), dto);
+                this.loadChunks(startPos, startRoom.roomData(), dto);
             }
 
             if (this.units.isEmpty()) {
@@ -124,14 +124,14 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
 
         Vec roomVec;
 
-        if (startRoom.x() == currentRoom.getRoomData().x()) {
+        if (startRoom.x() == currentRoom.roomData().x()) {
             // Only update z?
-            int newStartZ = this.zPartCalculation.calculatePointPart(oldStartRoomZ, startRoom.z(), currentRoom.getRoomData().z(), roomScale);
+            int newStartZ = this.zPartCalculation.calculatePointPart(oldStartRoomZ, startRoom.z(), currentRoom.roomData().z(), roomScale);
             roomVec = new Vec(startPos.blockX(), startPos.blockY(), newStartZ);
         } else {
             // The newStartX calculation must be positive otherwise the dungeon is mirrored
-            int newStartX = this.xPartCalculation.calculatePointPart(oldStartRoomX, startRoom.x(), currentRoom.getRoomData().x(), roomScale);
-            int newStartZ = this.zPartCalculation.calculatePointPart(oldStartRoomZ, startRoom.z(), currentRoom.getRoomData().z(), roomScale);
+            int newStartX = this.xPartCalculation.calculatePointPart(oldStartRoomX, startRoom.x(), currentRoom.roomData().x(), roomScale);
+            int newStartZ = this.zPartCalculation.calculatePointPart(oldStartRoomZ, startRoom.z(), currentRoom.roomData().z(), roomScale);
             roomVec = new Vec(newStartX, startPos.blockY(), newStartZ);
         }
 
@@ -161,7 +161,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
             roomUnit.addChunk(horizontalStartVec, instance.getChunkAt(horizontalStartVec));
         }
 
-        roomUnit.setSchematicPath(currentRoom.getSchematicPath());
+        roomUnit.setSchematicPath(currentRoom.schematicPath());
 
         this.units.add(roomUnit.build());
     }

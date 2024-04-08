@@ -37,15 +37,6 @@ public sealed interface DungeonGenerator extends LayoutParser permits BaseGenera
     void generate(@NotNull Point startPos);
 
     /**
-     * Saves the dungeon into a world folder.
-     * Please note that the method is not implemented!!!
-     */
-    @Deprecated(forRemoval = true, since = "At the moment it's not planned to have a save method!")
-    default void save() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    /**
      * Set the room scale for the generation.
      *
      * @param scale the scale to set

@@ -16,5 +16,10 @@ import java.util.Map;
 @FunctionalInterface
 public interface ChunkHandling {
 
+    /**
+     * The method contains the logic to handle the chunks which are not loaded yet.
+     * @param instance the instance to handle the chunks
+     * @param chunkMap the map of chunks to handle
+     */
     void handleChunks(@NotNull Instance instance, @NotNull Map<Vec, Chunk> chunkMap);
 }

@@ -56,23 +56,23 @@ public final class VerticalLineGenerator extends BaseGenerator {
     @Override
     public void generate(@NotNull Point startPos) {
         //Aktuelle Richtung für die Generation South und links unten hinstellen
-        var startRoom = dtos.stream().filter(roomDTO -> roomDTO.getRoomData().type() == RoomType.START_ROOM).findFirst().get();
+        var startRoom = dtos.stream().filter(roomDTO -> roomDTO.roomData().type() == RoomType.START).findFirst().get();
         this.dtos.remove(startRoom);
-        roomPlacement.place(instance, startPos, startRoom.getSchematicPath());
+        roomPlacement.place(instance, startPos, startRoom.schematicPath());
 
         int oldStartRoomX = startPos.blockX();
 
         // SOUT x -> neagtive z ins Positive
         for (int i = 0; i < this.dtos.size(); i++) {
             var currentRoom = this.dtos.get(i);
-            generatorLogger.debug("Current room in queue is {}", currentRoom.getRoomData().type());
-            if (startRoom.getRoomData().x() != currentRoom.getRoomData().x()) {
+            generatorLogger.debug("Current room in queue is {}", currentRoom.roomData().type());
+            if (startRoom.roomData().x() != currentRoom.roomData().x()) {
                 // Only update z?
 
-                int newStartX = oldStartRoomX - ((startRoom.getRoomData().x() - currentRoom.getRoomData().x()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
+                int newStartX = oldStartRoomX - ((startRoom.roomData().x() - currentRoom.roomData().x()) * (roomScale * Chunk.CHUNK_SECTION_SIZE));
                 var position = new Vec(newStartX, startPos.y(), startPos.z());
                 generatorLogger.debug("New position is {}", position);
-                roomPlacement.place(instance, position, currentRoom.getSchematicPath());
+                roomPlacement.place(instance, position, currentRoom.schematicPath());
             }
         }
     }
