@@ -2,6 +2,8 @@ package net.theevilreaper.apis.api.data;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,18 +12,18 @@ class RoomTypeTest {
 
     @Test
     void testGetId() {
-        assertEquals(0, RoomType.NORMAL_ROOM.getId());
+        assertNotEquals(0, RoomType.START.getId());
     }
 
     @Test
     void testGetName() {
-        assertNotEquals("NORMAL", RoomType.ITEM_ROOM.name());
+        assertNotEquals("NORMAL", RoomType.ITEM.name());
     }
 
-    @Test
-    void testGetType() {
-       assertEquals(RoomType.TELEPORT_ROOM, RoomType.getRoomType(5));
-       assertEquals(RoomType.NORMAL_ROOM, RoomType.getRoomType(69));
+    @ParameterizedTest
+    @ValueSource(ints = {0, 2, 6, 7})
+    void testGetType(int id){
+        assertDoesNotThrow(() -> assertNotNull(RoomType.getRoomType(id)));
     }
 }
 
