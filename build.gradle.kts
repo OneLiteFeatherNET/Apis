@@ -40,6 +40,7 @@ tasks {
 
     compileJava {
         options.encoding = "UTF-8"
+        options.release = 21
     }
 
     jacocoTestReport {
