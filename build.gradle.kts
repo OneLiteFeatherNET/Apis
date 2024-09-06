@@ -62,7 +62,7 @@ tasks {
 
 publishData {
     addBuildData()
-    useGitlabReposForProject("86", "https://gitlab.onelitefeather.dev")
+    useGitlabReposForProject("86", "https://gitlab.onelitefeather.dev/")
     publishTask("jar")
 }
 
