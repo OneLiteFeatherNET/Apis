@@ -1,13 +1,13 @@
 plugins {
     java
+    `java-library`
     jacoco
     `maven-publish`
-    alias(libs.plugins.sonarqube)
+    alias(libs.plugins.publishdata)
 }
 
 group = "net.theevilreaper.apis"
-val baseVersion = "0.2.0-SNAPSHOT"
-val sonarKey = "dungeon_projects_apis_AYKTgGApdAa6ziWsmL8y"
+version = "0.2.0"
 
 java {
     toolchain {
@@ -15,15 +15,16 @@ java {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven("https://jitpack.io")
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor(1, "minutes")
 }
 
 dependencies {
+    implementation(platform(libs.dungeon.base.bom))
     implementation(libs.schem)
     compileOnly(libs.minestom)
 
+    testImplementation(platform(libs.dungeon.base.bom))
     testImplementation(libs.minestom)
     testImplementation(libs.minestom.test)
     testImplementation(libs.junit.jupiter)
@@ -57,47 +58,35 @@ tasks {
             events("passed", "skipped", "failed")
         }
     }
-
-    getByName("sonar") {
-        dependsOn(rootProject.tasks.test)
-    }
 }
 
-sonarqube {
-    properties {
-        property("sonar.projectKey", sonarKey)
-    }
+publishData {
+    addBuildData()
+    useGitlabReposForProject("86", "https://gitlab.onelitefeather.dev")
+    publishTask("jar")
 }
 
 publishing {
     publications {
-
         create<MavenPublication>("maven") {
-            from(components["java"])
+            // configure the publication as defined previously.
+            publishData.configurePublication(this)
+            version = publishData.getVersion(false)
         }
-
     }
-    if (System.getenv().containsKey("CI")) {
-        repositories {
-            maven {
-                name = "GitLab"
-                val ciApiv4Url = System.getenv("CI_API_V4_URL")
-                val projectId = System.getenv("CI_PROJECT_ID")
-                url = uri("$ciApiv4Url/projects/$projectId/packages/maven")
-                credentials(HttpHeaderCredentials::class.java) {
-                    name = "Job-Token"
-                    value = System.getenv("CI_JOB_TOKEN")
-                }
-                authentication {
-                    create<HttpHeaderAuthentication>("header")
-                }
+    repositories {
+        maven {
+            credentials(HttpHeaderCredentials::class) {
+                name = "Job-Token"
+                value = System.getenv("CI_JOB_TOKEN")
             }
+            authentication {
+                create("header", HttpHeaderAuthentication::class)
+            }
+
+            name = "Gitlab"
+            // Get the detected repository from the publish data
+            url = uri(publishData.getRepository())
         }
     }
-}
-
-version = if (System.getenv().containsKey("CI")) {
-    "${baseVersion}+${System.getenv("CI_COMMIT_SHORT_SHA")}"
-} else {
-    baseVersion
 }
