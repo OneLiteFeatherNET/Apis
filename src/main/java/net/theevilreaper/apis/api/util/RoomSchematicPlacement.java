@@ -1,12 +1,12 @@
 package net.theevilreaper.apis.api.util;
 
-import net.hollowcube.util.schem.Rotation;
-import net.hollowcube.util.schem.SchematicReader;
+import net.hollowcube.schem.Rotation;
+import net.hollowcube.schem.Schematic;
+import net.hollowcube.schem.SchematicReader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -24,15 +24,14 @@ public final class RoomSchematicPlacement {
     /**
      * Places a room from a schematic at a specified position in a given instance.
      *
-     * @param instance The target instance where the room will be placed.
-     * @param position The position where the room will be placed within the instance.
-     * @param schematicPath The path to the schematic file containing the room's design.
-     * @param callback An optional callback to be executed after the room is placed. Can be null.
+     * @param instance the target instance where the room will be placed.
+     * @param position the position where the room will be placed within the instance.
+     * @param schematicPath he path to the schematic file containing the room's design.
      *
-     * @throws NullPointerException If instance, position, or schematicPath is null.
+     * @throws NullPointerException if instance, position, or schematicPath is null.
      */
-    public static void placeRoom(@NotNull Instance instance, @NotNull Point position, @NotNull Path schematicPath, @Nullable Runnable callback) {
-        var schematic = SchematicReader.read(schematicPath);
-        schematic.build(Rotation.NONE, null).apply(instance, position, callback);
+    public static void placeRoom(@NotNull Instance instance, @NotNull Point position, @NotNull Path schematicPath) {
+        Schematic schematic = new SchematicReader().read(schematicPath);
+        schematic.apply(Rotation.NONE, (point, block) -> instance.setBlock(position.add(point), block));
     }
 }
