@@ -33,12 +33,6 @@ dependencies {
 }
 
 tasks {
-    processResources {
-        filesMatching("extension.json") {
-            expand(project.properties)
-        }
-    }
-
     compileJava {
         options.encoding = "UTF-8"
         options.release = 21
