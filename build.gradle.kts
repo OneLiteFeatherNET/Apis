@@ -20,11 +20,11 @@ configurations.all {
 }
 
 dependencies {
-    implementation(platform(libs.dungeon.base.bom))
+    implementation(platform(libs.bom.base))
     implementation(libs.schem)
     compileOnly(libs.minestom)
 
-    testImplementation(platform(libs.dungeon.base.bom))
+    testImplementation(platform(libs.bom.base))
     testImplementation(libs.minestom)
     testImplementation(libs.minestom.test)
     testImplementation(libs.junit.jupiter)
