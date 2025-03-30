@@ -8,42 +8,20 @@ dependencyResolutionManagement {
         }
     }
     repositories {
-        if (System.getenv("CI") != null) {
-            repositoriesMode = RepositoriesMode.PREFER_SETTINGS
-            repositories {
-                maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                maven("https://repo.htl-md.schule/repository/Gitlab-Runner/")
-                maven {
-                    val groupdId = 28 // Gitlab Group
-                    val ciApiv4Url = System.getenv("CI_API_V4_URL")
-                    url = uri("$ciApiv4Url/groups/$groupdId/-/packages/maven")
-                    name = "GitLab"
-                    credentials(HttpHeaderCredentials::class.java) {
-                        name = "Job-Token"
-                        value = System.getenv("CI_JOB_TOKEN")
-                    }
-                    authentication {
-                        create<HttpHeaderAuthentication>("header")
-                    }
+        mavenCentral()
+        maven {
+            name = "OneLiteFeatherRepository"
+            url = uri("https://repo.onelitefeather.dev/onelitefeather")
+            if (System.getenv("CI") != null) {
+                credentials {
+                    username = System.getenv("ONELITEFEATHER_MAVEN_USERNAME")
+                    password = System.getenv("ONELITEFEATHER_MAVEN_PASSWORD")
                 }
-            }
-        } else {
-            repositories {
-                mavenCentral()
-                maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-                maven {
-                    val groupdId = 28 // Gitlab Group
-                    url = uri("https://gitlab.onelitefeather.dev/api/v4/groups/$groupdId/-/packages/maven")
-                    name = "GitLab"
-                    credentials(HttpHeaderCredentials::class.java) {
-                        name = "Private-Token"
-                        value = providers.gradleProperty("gitLabPrivateToken").get()
-                    }
-                    authentication {
-                        create<HttpHeaderAuthentication>("header")
-                    }
+            } else {
+                credentials(PasswordCredentials::class)
+                authentication {
+                    create<BasicAuthentication>("basic")
                 }
-
             }
         }
     }
@@ -51,8 +29,9 @@ dependencyResolutionManagement {
         create("libs") {
             version("publishdata", "1.4.0")
             version("schem", "1.3.1")
+            version("bom", "1.1.2")
 
-            library("dungeon.base.bom", "net.theevilreaper.dungeon.bom", "base").version("1.1.1")
+            library("bom.base", "net.theevilreaper.mycelium.bom", "mycelium-bom").versionRef("bom")
             library("minestom", "net.onelitefeather.microtus", "Microtus").withoutVersion()
             library("minestom-test", "net.onelitefeather.microtus.testing", "testing").withoutVersion()
             library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").withoutVersion()
