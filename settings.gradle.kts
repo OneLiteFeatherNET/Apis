@@ -36,8 +36,6 @@ dependencyResolutionManagement {
             library("minestom-test", "net.onelitefeather.microtus.testing", "testing").withoutVersion()
             library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").withoutVersion()
             library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").withoutVersion()
-            library("mockito-core", "org.mockito", "mockito-core").withoutVersion()
-            library("mockito-junit", "org.mockito", "mockito-junit-jupiter").withoutVersion()
             library("schem", "dev.hollowcube", "schem").versionRef("schem")
 
             plugin("publishdata", "de.chojo.publishdata").versionRef("publishdata")
