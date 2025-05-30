@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.publishdata)
 }
 
-group = "net.theevilreaper.apis"
+group = "net.theevilreaper"
 version = "0.2.0"
 
 java {
@@ -24,12 +24,12 @@ dependencies {
     implementation(libs.schem)
     compileOnly(libs.minestom)
 
-    testImplementation(platform(libs.bom.base))
     testImplementation(libs.minestom)
-    testImplementation(libs.minestom.test)
-    testImplementation(libs.junit.jupiter)
-
-    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.cyano)
+    testImplementation(libs.junit.api)
+    testImplementation(libs.junit.params)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testRuntimeOnly(libs.junit.engine)
 }
 
 tasks {
