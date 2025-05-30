@@ -29,14 +29,16 @@ dependencyResolutionManagement {
         create("libs") {
             version("publishdata", "1.4.0")
             version("schem", "1.3.1")
-            version("bom", "1.1.2")
+            version("bom", "1.2.3")
 
-            library("bom.base", "net.theevilreaper.mycelium.bom", "mycelium-bom").versionRef("bom")
-            library("minestom", "net.onelitefeather.microtus", "Microtus").withoutVersion()
-            library("minestom-test", "net.onelitefeather.microtus.testing", "testing").withoutVersion()
-            library("junit-jupiter", "org.junit.jupiter", "junit-jupiter").withoutVersion()
-            library("junit-jupiter-engine", "org.junit.jupiter", "junit-jupiter-engine").withoutVersion()
+            library("bom.base", "net.onelitefeather", "mycelium-bom").versionRef("bom")
+            library("minestom", "net.minestom", "minestom-snapshots").withoutVersion()
+            library("cyano", "net.onelitefeather", "cyano").withoutVersion()
+            library("junit.api", "org.junit.jupiter", "junit-jupiter-api").withoutVersion()
+            library("junit.engine", "org.junit.jupiter", "junit-jupiter-engine").withoutVersion()
+            library("junit.params", "org.junit.jupiter", "junit-jupiter-params").withoutVersion()
             library("schem", "dev.hollowcube", "schem").versionRef("schem")
+            library("junit.platform.launcher", "org.junit.platform", "junit-platform-launcher").withoutVersion()
 
             plugin("publishdata", "de.chojo.publishdata").versionRef("publishdata")
         }
