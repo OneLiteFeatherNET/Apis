@@ -29,7 +29,7 @@ dependencyResolutionManagement {
         create("libs") {
             version("publishdata", "1.4.0")
             version("schem", "1.3.1")
-            version("bom", "1.4.2")
+            version("bom", "1.4.3")
 
             library("bom.base", "net.onelitefeather", "mycelium-bom").versionRef("bom")
             library("minestom", "net.minestom", "minestom").withoutVersion()
