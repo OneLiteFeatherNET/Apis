@@ -3,7 +3,6 @@ package net.theevilreaper.apis.api.loader;
 import net.theevilreaper.apis.api.util.Constants;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -26,14 +25,12 @@ import static net.theevilreaper.apis.api.util.Constants.REGION_FILE;
 import static net.theevilreaper.apis.api.util.Constants.SCHEMATIC_FILE;
 
 /**
- * The class contains the main logic to load the schematic
- * and region files for the dungeon generation from a given path.
+ * The class contains the main logic to load the schematic and region files for the dungeon generation from a given path.
  *
  * @author theEvilReaper
  * @version 1.0.0
  * @since 1.0.0
  **/
-@ApiStatus.NonExtendable
 public final class RoomSchematicLoader {
 
     private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);

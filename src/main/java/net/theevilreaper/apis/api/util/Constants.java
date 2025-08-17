@@ -1,14 +1,11 @@
 package net.theevilreaper.apis.api.util;
 
-import org.jetbrains.annotations.ApiStatus;
-
 /**
- * A util class which contains some constant value which are used for the layout mapping.
+ * A util class which contains some constant value that are used for the layout mapping.
  * @author Joltra
  * @version 1.0.0
  * @since 1.0.0
  */
-@ApiStatus.NonExtendable
 public final class Constants {
 
     private Constants() {}

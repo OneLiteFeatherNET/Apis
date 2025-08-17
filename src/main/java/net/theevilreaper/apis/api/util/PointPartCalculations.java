@@ -1,16 +1,14 @@
 package net.theevilreaper.apis.api.util;
 
 import net.minestom.server.instance.Chunk;
-import org.jetbrains.annotations.ApiStatus;
 
 /**
  * The class contains default implementation from the {@link net.theevilreaper.apis.api.generator.functional.OriginPointPartCalculation}.
- * Each of the method are used to determine the x and z coordinate for the room placement.
+ * Each of the methods is used to determine the x and z coordinate for the room placement.
  * @author theEvilReaper
  * @version 1.0.0
  * @since 1.0.0
  **/
-@ApiStatus.NonExtendable
 public final class PointPartCalculations {
 
     private PointPartCalculations() { }

@@ -5,18 +5,17 @@ import net.hollowcube.schem.Schematic;
 import net.hollowcube.schem.SchematicReader;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
-import org.jetbrains.annotations.ApiStatus;
+import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
 /**
- * The class contains a default implementation from the {@link net.theevilreaper.apis.api.generator.functional.SchematicPlacement} interface.
+ * The class contains a default implementation from the {@link SchematicPlacement} interface.
  * @author theEvilReaper
  * @version 1.0.0
  * @since 1.0.0
  **/
-@ApiStatus.NonExtendable
 public final class RoomSchematicPlacement {
 
     private RoomSchematicPlacement() { }
