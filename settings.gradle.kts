@@ -1,12 +1,6 @@
 rootProject.name = "apis"
 
 dependencyResolutionManagement {
-    pluginManagement {
-        repositories {
-            gradlePluginPortal()
-            maven("https://eldonexus.de/repository/maven-public/")
-        }
-    }
     repositories {
         mavenCentral()
         maven {
@@ -27,20 +21,20 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            version("publishdata", "1.4.0")
             version("schem", "1.3.1")
             version("bom", "1.4.3")
 
             library("bom.base", "net.onelitefeather", "mycelium-bom").versionRef("bom")
+
             library("minestom", "net.minestom", "minestom").withoutVersion()
             library("cyano", "net.onelitefeather", "cyano").withoutVersion()
             library("junit.api", "org.junit.jupiter", "junit-jupiter-api").withoutVersion()
             library("junit.engine", "org.junit.jupiter", "junit-jupiter-engine").withoutVersion()
             library("junit.params", "org.junit.jupiter", "junit-jupiter-params").withoutVersion()
-            library("schem", "dev.hollowcube", "schem").versionRef("schem")
             library("junit.platform.launcher", "org.junit.platform", "junit-platform-launcher").withoutVersion()
 
-            plugin("publishdata", "de.chojo.publishdata").versionRef("publishdata")
+            library("schem", "dev.hollowcube", "schem").versionRef("schem")
+
         }
     }
 }
