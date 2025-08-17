@@ -38,15 +38,16 @@ tasks {
     }
 
     jacocoTestReport {
-        dependsOn(rootProject.tasks.test)
+        dependsOn(test)
         reports {
             xml.required.set(true)
         }
     }
 
     test {
-        finalizedBy(rootProject.tasks.jacocoTestReport)
+        finalizedBy(jacocoTestReport)
         useJUnitPlatform()
+        jvmArgs("-Dminestom.inside-test=true")
         testLogging {
             events("passed", "skipped", "failed")
         }
