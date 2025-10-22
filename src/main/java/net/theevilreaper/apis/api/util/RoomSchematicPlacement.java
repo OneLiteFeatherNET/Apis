@@ -1,13 +1,14 @@
 package net.theevilreaper.apis.api.util;
 
-import net.hollowcube.schem.Rotation;
 import net.hollowcube.schem.Schematic;
-import net.hollowcube.schem.SchematicReader;
+import net.hollowcube.schem.reader.SchematicReader;
+import net.hollowcube.schem.util.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -30,7 +31,13 @@ public final class RoomSchematicPlacement {
      * @throws NullPointerException if instance, position, or schematicPath is null.
      */
     public static void placeRoom(@NotNull Instance instance, @NotNull Point position, @NotNull Path schematicPath) {
-        Schematic schematic = new SchematicReader().read(schematicPath);
-        schematic.apply(Rotation.NONE, (point, block) -> instance.setBlock(position.add(point), block));
+        byte[] schematicContent = null;
+        try {
+            schematicContent = Files.readAllBytes(schematicPath);
+            Schematic schematic = SchematicReader.detecting().read(schematicContent);
+            schematic.createBatch(Rotation.NONE).apply(instance, position, () -> {});
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }

@@ -21,7 +21,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            version("schem", "1.3.1")
+            version("schem", "2.0.0")
             version("bom", "1.5.0")
 
             library("bom.base", "net.onelitefeather", "mycelium-bom").versionRef("bom")
