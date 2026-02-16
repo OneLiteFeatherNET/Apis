@@ -35,7 +35,8 @@ public final class RoomSchematicPlacement {
         try {
             schematicContent = Files.readAllBytes(schematicPath);
             Schematic schematic = SchematicReader.detecting().read(schematicContent);
-            schematic.createBatch(Rotation.NONE).apply(instance, position, () -> {});
+            //TODO: Check if we should add a parameter for the callback
+            schematic.createBatch(Rotation.NONE).apply(instance, position, null);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
