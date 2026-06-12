@@ -32,7 +32,7 @@ public final class DebugGenerator extends BaseGenerator {
         if (!roomData.isEmpty()) {
             int oldStartRoomX = -1;
             int oldStartRoomZ = -1;
-            Pos playerPosition = Pos.fromPoint(startPos);
+            Pos playerPosition = startPos.asPos();
             generatorLogger.info("New Start Room ({}, {})", playerPosition.chunkX(), playerPosition.chunkZ());
             Chunk startChunk = instance.getChunk(playerPosition.chunkX(), playerPosition.chunkZ());
             buildRoom(startChunk.getChunkX(), startChunk.getChunkZ(), START_ROOM, playerPosition.blockY());
