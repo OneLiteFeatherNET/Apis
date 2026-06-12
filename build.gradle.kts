@@ -21,6 +21,7 @@ configurations.all {
 dependencies {
     implementation(platform(libs.bom.base))
     implementation(libs.schem)
+    implementation(libs.slf4j.api)
     compileOnly(libs.minestom)
 
     testImplementation(libs.minestom)
