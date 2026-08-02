@@ -4,7 +4,6 @@ import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.chunk.ChunkUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public final class GenerationChunkHandling {
      *
      * @throws NullPointerException If instance or chunkMap is null.
      */
-    public static void handleGenerationChunkLoading(@NotNull Instance instance, @NotNull Map<Vec, Chunk> chunkMap) {
+    public static void handleGenerationChunkLoading(Instance instance, Map<Vec, Chunk> chunkMap) {
         if (chunkMap.isEmpty()) return;
 
         for (Map.Entry<Vec, Chunk> posChunks : chunkMap.entrySet()) {

@@ -2,7 +2,6 @@ package net.theevilreaper.apis.api.generator.functional;
 
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 
@@ -21,5 +20,5 @@ public interface SchematicPlacement {
      * @param position the origin point to place the schematic
      * @param schematicPath the path to the schematic file
      */
-    void place(@NotNull Instance instance, @NotNull Point position, @NotNull Path schematicPath);
+    void place(Instance instance, Point position, Path schematicPath);
 }

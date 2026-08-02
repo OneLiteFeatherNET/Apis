@@ -1,7 +1,6 @@
 package net.theevilreaper.apis.api.data;
 
 import net.theevilreaper.apis.api.generator.exception.RoomTypeNotFoundException;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The enum contains all room types that currently exist.
@@ -54,7 +53,7 @@ public enum RoomType {
      * @param id the id to check
      * @return the given type if it exists, NORMAL_ROOM otherwise
      */
-    public static @NotNull RoomType getRoomType(int id) {
+    public static RoomType getRoomType(int id) {
         if (id < 0 || id >= values.length) throw new RoomTypeNotFoundException("The room type with the id " + id + " does not exist");
         return values[id];
     }

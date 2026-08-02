@@ -9,7 +9,6 @@ import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
 import net.theevilreaper.apis.api.generator.DungeonGeneratorImpl;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -25,14 +24,14 @@ import java.util.List;
 
 public final class VerticalLineGenerator extends AbstractDebugGenerator {
 
-    public VerticalLineGenerator(@NotNull Path filePath, @NotNull RoomSchematicLoader roomSchematicLoader) {
+    public VerticalLineGenerator(Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super("Line", filePath, roomSchematicLoader);
         generatorLogger = LoggerFactory.getLogger(VerticalLineGenerator.class);
     }
 
 
     @Override
-    public void generate(@NotNull Point startPos) {
+    public void generate(Point startPos) {
         // Current generation direction is south, starting from the bottom-left
         var startRoom = dtos.stream().filter(roomDTO -> roomDTO.roomData().type() == RoomType.START).findFirst().get();
         this.dtos.remove(startRoom);

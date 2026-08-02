@@ -3,7 +3,6 @@ package net.theevilreaper.apis.api.loader;
 
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +43,7 @@ public final class RoomSchematicLoader {
      *
      * @param basePath the path which contains the files for the generation
      */
-    public RoomSchematicLoader(@NotNull Path basePath) {
+    public RoomSchematicLoader(Path basePath) {
         this.basePath = basePath;
     }
 
@@ -53,7 +52,6 @@ public final class RoomSchematicLoader {
      *
      * @return the list which contains the files
      */
-    @NotNull
     public List<Path> findRegions() {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isRegionFile).toList();
@@ -83,8 +81,7 @@ public final class RoomSchematicLoader {
      * @param paths the list which contains the region files
      * @return a {@link Map} which contains the mapped data
      */
-    @NotNull
-    public Map<Path, Path> mapSchematicsByRegionsFiles(@NotNull List<Path> paths) {
+    public Map<Path, Path> mapSchematicsByRegionsFiles(List<Path> paths) {
         Map<Path, Path> schematics = new HashMap<>();
         for (Path path : paths) {
             Path absolutPath = path.toAbsolutePath().getParent();
@@ -104,7 +101,7 @@ public final class RoomSchematicLoader {
      * @throws IOException if something went wrong
      */
     @Nullable
-    public RoomDTO findByRoomData(@NotNull RoomData roomData, @NotNull Map<Path, Path> mappedFiles) throws IOException {
+    public RoomDTO findByRoomData(RoomData roomData, Map<Path, Path> mappedFiles) throws IOException {
         RoomDTO result = null;
         for (Map.Entry<Path, Path> entry : mappedFiles.entrySet()) {
             Path key = entry.getKey();
@@ -127,7 +124,7 @@ public final class RoomSchematicLoader {
      * @param path the path to check
      * @return True if the path points to a region file otherwise false
      */
-    private boolean isRegionFile(@NotNull Path path) {
+    private boolean isRegionFile(Path path) {
         return path.toString().endsWith(REGION_FILE);
     }
 
@@ -137,7 +134,7 @@ public final class RoomSchematicLoader {
      * @param path the path to check
      * @return True if the path points to a schematic file otherwise false
      */
-    private boolean isSchematicFile(@NotNull Path path) {
+    private boolean isSchematicFile(Path path) {
         return path.toString().endsWith(SCHEMATIC_FILE);
     }
 }

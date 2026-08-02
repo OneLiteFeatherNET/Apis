@@ -3,7 +3,6 @@ package net.theevilreaper.apis.api.generator.unit;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
@@ -18,28 +17,28 @@ import java.util.Map;
 public interface RoomUnit {
 
     @Contract(pure = true)
-    @NotNull static Builder builder() {
+    static Builder builder() {
         return new RoomUnitBuilder();
     }
 
-    @NotNull Path schematicPath();
+    Path schematicPath();
 
-    @NotNull Vec originPoint();
+    Vec originPoint();
 
-    @NotNull Map<Vec, Chunk> chunks();
+    Map<Vec, Chunk> chunks();
 
     sealed interface Builder permits RoomUnitBuilder {
 
-        @NotNull Builder setSchematicPath(@NotNull Path path);
+        Builder setSchematicPath(Path path);
 
-        @NotNull Builder setOriginPoint(@NotNull Vec vec);
+        Builder setOriginPoint(Vec vec);
 
-        @NotNull Builder addChunk(@NotNull Vec vec, @Nullable Chunk chunk);
+        Builder addChunk(Vec vec, @Nullable Chunk chunk);
 
         /**
          * Creates a new object reference of an {@link RoomUnit} implementation.
          * @return the created object
          */
-        @NotNull RoomUnit build();
+        RoomUnit build();
     }
 }

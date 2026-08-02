@@ -14,7 +14,6 @@ import net.theevilreaper.apis.api.generator.exception.GeneratorGenerationExcepti
 import net.theevilreaper.apis.api.generator.unit.RoomUnit;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
     private final List<RoomDTO> dtos;
     private final List<RoomUnit> units;
 
-    public DungeonGeneratorImpl(@NotNull Path filePath, RoomSchematicLoader roomSchematicLoader) {
+    public DungeonGeneratorImpl(Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super("Isaac", filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
@@ -60,7 +59,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
     }
 
     @Override
-    public void generate(@NotNull Point startPos) {
+    public void generate(Point startPos) {
         Check.argCondition(instance == null, "The instance can't be null");
         var chunkPos = verifyStartPosIntegrity(startPos);
 
@@ -100,7 +99,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
      * @return the determined southwest position
      */
     @Contract(value = "_ -> new", pure = true)
-    private @NotNull Vec verifyStartPosIntegrity(@NotNull Point position) {
+    private Vec verifyStartPosIntegrity(Point position) {
         int startChunkX = position.chunkX();
         int startChunkZ = position.chunkZ();
 
@@ -116,7 +115,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
      * @param startRoom the {@link RoomData} reference from the start room
      * @param currentRoom the {@link RoomDTO} from the current room
      */
-    private void loadChunks(@NotNull Point startPos, @NotNull RoomData startRoom, @NotNull RoomDTO currentRoom) {
+    private void loadChunks(Point startPos, RoomData startRoom, RoomDTO currentRoom) {
         int oldStartRoomX = startPos.blockX();
         int oldStartRoomZ = startPos.blockZ();
 

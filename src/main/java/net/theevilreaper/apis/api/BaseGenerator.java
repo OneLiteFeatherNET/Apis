@@ -10,7 +10,6 @@ import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
 import net.theevilreaper.apis.api.util.GenerationChunkHandling;
 import net.theevilreaper.apis.api.util.PointPartCalculations;
 import net.theevilreaper.apis.api.util.RoomSchematicPlacement;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * @param name the name from the generator
      * @param filePath the path to the file
      */
-    protected BaseGenerator(@NotNull String name, @NotNull Path filePath) {
+    protected BaseGenerator(String name, Path filePath) {
         this.name = name;
         this.filePath = filePath;
         this.roomData = new ArrayList<>();
@@ -108,7 +107,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * @param instance the instance to set
      */
     @Override
-    public void setInstance(@NotNull Instance instance) {
+    public void setInstance(Instance instance) {
         this.instance = instance;
     }
 
@@ -128,7 +127,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * @return the given name
      */
     @Override
-    public @NotNull String getName() {
+    public String getName() {
         return name;
     }
 
@@ -137,7 +136,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
      * @return the given array
      */
     @Override
-    public @NotNull RoomData[][] getFloorPlan() {
+    public RoomData[][] getFloorPlan() {
         return floorPlan;
     }
 }

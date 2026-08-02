@@ -3,7 +3,6 @@ package net.theevilreaper.apis.api.generator.functional;
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
 import net.minestom.server.instance.Instance;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -21,5 +20,5 @@ public interface ChunkHandling {
      * @param instance the instance to handle the chunks
      * @param chunkMap the map of chunks to handle
      */
-    void handleChunks(@NotNull Instance instance, @NotNull Map<Vec, Chunk> chunkMap);
+    void handleChunks(Instance instance, Map<Vec, Chunk> chunkMap);
 }

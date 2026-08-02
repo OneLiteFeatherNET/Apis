@@ -1,6 +1,5 @@
 package net.theevilreaper.apis.api.data;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,7 +23,7 @@ public enum DoorFace {
      * @param id the id for the door
      * @param name the name for the door
      */
-    DoorFace(int id, @NotNull String name) {
+    DoorFace(int id, String name) {
         this.id = id;
         this.name = name;
     }

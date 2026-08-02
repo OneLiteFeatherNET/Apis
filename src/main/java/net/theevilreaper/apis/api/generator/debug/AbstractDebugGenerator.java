@@ -4,7 +4,6 @@ import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -22,7 +21,7 @@ public abstract class AbstractDebugGenerator extends BaseGenerator {
     protected final RoomSchematicLoader roomSchematicLoader;
     protected final List<RoomDTO> dtos;
 
-    protected AbstractDebugGenerator(@NotNull String name, @NotNull Path filePath, @NotNull RoomSchematicLoader roomSchematicLoader) {
+    protected AbstractDebugGenerator(String name, Path filePath, RoomSchematicLoader roomSchematicLoader) {
         super(name, filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();

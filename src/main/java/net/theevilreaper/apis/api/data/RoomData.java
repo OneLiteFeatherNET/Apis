@@ -1,7 +1,6 @@
 package net.theevilreaper.apis.api.data;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.Objects;
  * @version 1.0.0
  * @since 1.0.0
  **/
-public record RoomData(int x, int z, @NotNull RoomType type, DoorFace... doors) {
+public record RoomData(int x, int z, RoomType type, DoorFace... doors) {
 
     @Override
     public boolean equals(Object o) {
@@ -31,7 +30,7 @@ public record RoomData(int x, int z, @NotNull RoomType type, DoorFace... doors) 
 
     @Contract(pure = true)
     @Override
-    public @NotNull String toString() {
+    public String toString() {
         return "LoadedRoom{" +
                 "x=" + x +
                 ", z=" + z +
@@ -44,7 +43,7 @@ public record RoomData(int x, int z, @NotNull RoomType type, DoorFace... doors) 
      * @param expectedType the room type to check against
      * @return true if the room type matches the expected type, false otherwise
      */
-    public boolean is(@NotNull RoomType expectedType) {
+    public boolean is(RoomType expectedType) {
         return this.type == expectedType;
     }
 }

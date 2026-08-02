@@ -6,7 +6,6 @@ import net.minestom.server.timer.Task;
 import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
 import net.theevilreaper.apis.api.generator.unit.RoomUnit;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,7 @@ public final class SchematicPlacementTask implements Runnable {
      * @param schematicPlacement an implementation of {@link SchematicPlacement} interface
      * @param callback additional code which should be executed at the end
      */
-    public SchematicPlacementTask(@NotNull Instance instance, @NotNull List<RoomUnit> units, @NotNull SchematicPlacement schematicPlacement, @Nullable Runnable callback) {
+    public SchematicPlacementTask(Instance instance, List<RoomUnit> units, SchematicPlacement schematicPlacement, @Nullable Runnable callback) {
         this.instance = instance;
         this.roomQueue = new ArrayDeque<>(units);
         this.schematicPlacement = schematicPlacement;

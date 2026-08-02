@@ -1,6 +1,5 @@
 package net.theevilreaper.apis.api.generator.exception;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Exception which will be thrown if a room type is not found.
@@ -16,7 +15,7 @@ public final class RoomTypeNotFoundException extends RuntimeException {
      *
      * @param message the exception message
      */
-    public RoomTypeNotFoundException(@NotNull String message) {
+    public RoomTypeNotFoundException(String message) {
         super(message);
     }
 }

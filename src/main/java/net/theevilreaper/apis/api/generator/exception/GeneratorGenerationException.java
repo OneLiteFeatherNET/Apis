@@ -1,6 +1,5 @@
 package net.theevilreaper.apis.api.generator.exception;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author theEvilReaper
@@ -9,11 +8,11 @@ import org.jetbrains.annotations.NotNull;
  **/
 public final class GeneratorGenerationException extends RuntimeException {
 
-    public GeneratorGenerationException(@NotNull String message) {
+    public GeneratorGenerationException(String message) {
         super(message);
     }
 
-    public GeneratorGenerationException(@NotNull String message, @NotNull Throwable cause) {
+    public GeneratorGenerationException(String message, Throwable cause) {
         super(message, cause);
     }
 }

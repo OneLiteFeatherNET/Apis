@@ -2,7 +2,6 @@ package net.theevilreaper.apis.api.generator.unit;
 
 import net.minestom.server.coordinate.Vec;
 import net.minestom.server.instance.Chunk;
-import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -14,9 +13,9 @@ import java.util.Map;
  **/
 
 public record RoomUnitImpl(
-        @NotNull Path schematicPath,
-        @NotNull Vec originPoint,
-        @NotNull Map<Vec, Chunk> chunks
+        Path schematicPath,
+        Vec originPoint,
+        Map<Vec, Chunk> chunks
 ) implements RoomUnit {
 
 }

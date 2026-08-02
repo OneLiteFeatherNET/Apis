@@ -2,7 +2,6 @@ package net.theevilreaper.apis.api.event;
 
 import net.minestom.server.event.Event;
 import net.theevilreaper.apis.api.generator.unit.RoomUnit;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -14,4 +13,4 @@ import java.util.List;
  * @version 1.0.0
  * @since 1.0.0
  */
-public record GeneratorFinishEvent(@NotNull String name, @NotNull List<RoomUnit> roomUnits) implements Event { }
+public record GeneratorFinishEvent(String name, List<RoomUnit> roomUnits) implements Event { }

@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.data.RoomData;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * The class defines the basic structure of method for a {@link DungeonGenerator}.
@@ -34,7 +33,7 @@ public sealed interface DungeonGenerator extends LayoutParser permits BaseGenera
      *
      * @param startPos the position to start the dungeon at.
      */
-    void generate(@NotNull Point startPos);
+    void generate(Point startPos);
 
     /**
      * Set the room scale for the generation.
@@ -48,18 +47,18 @@ public sealed interface DungeonGenerator extends LayoutParser permits BaseGenera
      *
      * @param instance the instance object to set
      */
-    void setInstance(@NotNull Instance instance);
+    void setInstance(Instance instance);
 
     /**
      * Returns the name of the generator instance.
      *
      * @return the given name
      */
-    @NotNull String getName();
+    String getName();
 
     /**
      * Returns the array which contains the loaded floor plan.
      * @return the given array
      */
-    @NotNull RoomData[][] getFloorPlan();
+    RoomData[][] getFloorPlan();
 }

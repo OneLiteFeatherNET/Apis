@@ -8,7 +8,6 @@ import net.minestom.server.instance.block.Block;
 import net.theevilreaper.apis.api.BaseGenerator;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
@@ -25,13 +24,13 @@ public final class DebugGenerator extends BaseGenerator {
     private static final Block SHOP_ROOM = Block.YELLOW_CONCRETE;
     private static final Block ITEM_ROOM = Block.GREEN_CONCRETE;
 
-    public DebugGenerator(@NotNull Path filePath) {
+    public DebugGenerator(Path filePath) {
         super("Debug", filePath);
         generatorLogger = LoggerFactory.getLogger(DebugGenerator.class);
     }
 
     @Override
-    public void generate(@NotNull Point startPos) {
+    public void generate(Point startPos) {
         if (!roomData.isEmpty()) {
             int oldStartRoomX = -1;
             int oldStartRoomZ = -1;
@@ -94,7 +93,7 @@ public final class DebugGenerator extends BaseGenerator {
      * @param block the block which should be placed
      * @param y the y height for the generation
      */
-    private void createChunkBatch(@NotNull Chunk chunk, @NotNull Block block, int y) {
+    private void createChunkBatch(Chunk chunk, Block block, int y) {
         var batch  = new ChunkBatch();
         for (int x = 0; x < Chunk.CHUNK_SIZE_X; x++) {
             for (int z = 0; z < Chunk.CHUNK_SIZE_Z; z++) {
@@ -104,7 +103,7 @@ public final class DebugGenerator extends BaseGenerator {
         batch.apply(this.instance, chunk, null);
     }
 
-    private Block getBlock(@NotNull RoomData loadedRoom) {
+    private Block getBlock(RoomData loadedRoom) {
         return switch (loadedRoom.type()) {
             case START -> START_ROOM;
             case BOSS -> BOSS_ROOM;

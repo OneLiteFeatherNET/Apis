@@ -15,7 +15,6 @@ import net.theevilreaper.apis.api.DungeonGenerator;
 import net.theevilreaper.apis.api.data.RoomType;
 import net.theevilreaper.apis.api.generator.DungeonGeneratorImpl;
 import net.theevilreaper.apis.api.loader.RoomSchematicLoader;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -41,7 +40,7 @@ public class DebugCommand extends Command {
     private final DungeonGenerator generate;
     private final List<Path> schematics;
 
-    public DebugCommand(@NotNull Path floorPlanPath, @NotNull Path path) {
+    public DebugCommand(Path floorPlanPath, Path path) {
         super("gen", "g");
         RoomSchematicLoader roomSchematicLoader = new RoomSchematicLoader(path);
         this.schematics = roomSchematicLoader.findSchematics();
@@ -58,7 +57,7 @@ public class DebugCommand extends Command {
         addSyntax(this::onRegion, schematicArgument, roomArgument);
     }
 
-    private void gen(@NotNull CommandSender commandSender, @NotNull CommandContext commandContext) {
+    private void gen(CommandSender commandSender, CommandContext commandContext) {
         if (commandSender instanceof Player player) {
             this.generate.setInstance(player.getInstance());
             this.generate.loadData();
@@ -67,7 +66,7 @@ public class DebugCommand extends Command {
     }
 
     // /t <schematic> <type> -> name.schem | name.json + 1 attribute
-    private void onRegion(@NotNull CommandSender sender, @NotNull CommandContext context) {
+    private void onRegion(CommandSender sender, CommandContext context) {
         var schematic = context.get(schematicArgument);
         var type = context.get(roomArgument);
         Path schematicFinalPath = null;

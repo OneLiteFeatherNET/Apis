@@ -6,7 +6,6 @@ import net.hollowcube.schem.util.Rotation;
 import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public final class RoomSchematicPlacement {
      *
      * @throws NullPointerException if instance, position, or schematicPath is null.
      */
-    public static void placeRoom(@NotNull Instance instance, @NotNull Point position, @NotNull Path schematicPath) {
+    public static void placeRoom(Instance instance, Point position, Path schematicPath) {
         try {
             byte[] schematicContent = Files.readAllBytes(schematicPath);
             Schematic schematic = SchematicReader.detecting().read(schematicContent);
