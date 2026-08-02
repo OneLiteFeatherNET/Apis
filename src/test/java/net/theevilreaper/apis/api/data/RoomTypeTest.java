@@ -25,5 +25,13 @@ class RoomTypeTest {
     void testGetType(int id){
         assertDoesNotThrow(() -> assertNotNull(RoomType.getRoomType(id)));
     }
+
+    @Test
+    void testIsSpecial() {
+        assertTrue(RoomType.BOSS.isSpecial());
+        assertTrue(RoomType.START.isSpecial());
+        assertFalse(RoomType.NORMAL.isSpecial());
+        assertFalse(RoomType.DEAD.isSpecial());
+    }
 }
 

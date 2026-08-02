@@ -42,6 +42,14 @@ public enum RoomType {
     }
 
     /**
+     * Returns whether the room type is considered special.
+     * @return true if special, false otherwise
+     */
+    public boolean isSpecial() {
+        return this != NORMAL && this != DEAD;
+    }
+
+    /**
      * Fetch a RoomType by a given id.
      * @param id the id to check
      * @return the given type if it exists, NORMAL_ROOM otherwise

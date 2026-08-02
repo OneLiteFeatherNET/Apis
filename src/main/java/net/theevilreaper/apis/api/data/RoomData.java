@@ -40,42 +40,11 @@ public record RoomData(int x, int z, @NotNull RoomType type, DoorFace... doors) 
     }
 
     /**
-     * Returns true if the given type is {@link RoomType#START}
-     * @return true or false
+     * Checks if the room matches the specified room type.
+     * @param expectedType the room type to check against
+     * @return true if the room type matches the expected type, false otherwise
      */
-    public boolean isStart() {
-        return this.type == RoomType.START;
-    }
-
-    /**
-     * Returns true if the given type is {@link RoomType#SHOP}
-     * @return true or false
-     */
-    public boolean isShop() {
-        return this.type == RoomType.SHOP;
-    }
-
-    /**
-     * Returns true if the given type is {@link RoomType#BOSS}
-     * @return true or false
-     */
-    public boolean isBoss() {
-        return this.type == RoomType.BOSS;
-    }
-
-    /**
-     * Returns true if the given type is {@link RoomType#TELEPORT}
-     * @return true or false
-     */
-    public boolean isTeleport() {
-        return this.type == RoomType.TELEPORT;
-    }
-
-    /**
-     * Returns true if the given type is {@link RoomType#ITEM}
-     * @return true or false
-     */
-    public boolean isItem() {
-        return this.type == RoomType.ITEM;
+    public boolean is(@NotNull RoomType expectedType) {
+        return this.type == expectedType;
     }
 }
