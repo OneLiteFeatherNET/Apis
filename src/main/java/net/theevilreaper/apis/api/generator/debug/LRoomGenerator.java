@@ -24,35 +24,13 @@ import java.util.List;
  * @since 1.0.0
  **/
 
-public final class LRoomGenerator extends BaseGenerator {
-
-    private final RoomSchematicLoader roomSchematicLoader;
-    private final List<RoomDTO> dtos;
+public final class LRoomGenerator extends AbstractDebugGenerator {
 
     public LRoomGenerator(@NotNull Path filePath, @NotNull RoomSchematicLoader roomSchematicLoader) {
-        super("LGen", filePath);
-        this.roomSchematicLoader = roomSchematicLoader;
-        this.dtos = new ArrayList<>();
+        super("LGen", filePath, roomSchematicLoader);
         generatorLogger = LoggerFactory.getLogger(LRoomGenerator.class);
     }
 
-    @Override
-    public void loadData() {
-        super.loadData();
-        this.dtos.clear();
-        var regions = this.roomSchematicLoader.findRegions();
-        if (regions.isEmpty()) {
-            throw new IllegalArgumentException("Found a floor which does not contain any schematics");
-        }
-        var mapped = this.roomSchematicLoader.mapSchematicsByRegionsFiles(regions);
-        for (RoomData roomDat : roomData) {
-            try {
-                dtos.add(this.roomSchematicLoader.findByRoomData(roomDat, mapped));
-            } catch (IOException exception) {
-                generatorLogger.warn("Unable to add schematic into the dto list", exception);
-            }
-        }
-    }
 
     @Override
     public void generate(@NotNull Point startPos) {
