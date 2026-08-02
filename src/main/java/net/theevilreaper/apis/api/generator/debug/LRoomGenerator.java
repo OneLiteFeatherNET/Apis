@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author theEvilReaper
  * @version 1.0.0
- * @since
+ * @since 1.0.0
  **/
 
 public final class LRoomGenerator extends BaseGenerator {
@@ -57,7 +57,7 @@ public final class LRoomGenerator extends BaseGenerator {
     @Override
     public void generate(@NotNull Point startPos) {
         Check.argCondition(instance == null, "The instance can't be null");
-        //Aktuelle Richtung für die Generation South und links unten hinstellen
+        // Current generation direction is south, starting from the bottom-left
         var startRoom = dtos.stream().filter(roomDTO -> roomDTO.roomData().type() == RoomType.START).findFirst().get();
         this.dtos.remove(startRoom);
         generatorLogger.info("After remove from start {}", this.dtos.size());
@@ -67,7 +67,7 @@ public final class LRoomGenerator extends BaseGenerator {
         int oldStartRoomZ = startPos.blockZ();
 
 
-        // SOUT x -> neagtive z ins Positive
+        // South: x -> negative z to positive
         for (int i = 0; i < this.dtos.size(); i++) {
             var currentRoom = this.dtos.get(i);
             generatorLogger.debug("Current room in queue is {}",currentRoom.roomData().type());

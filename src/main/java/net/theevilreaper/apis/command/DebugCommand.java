@@ -65,7 +65,7 @@ public class DebugCommand extends Command {
         }
     }
 
-    // /t <schemac> <type> -> name.schema | name.json + 1 Atrr
+    // /t <schematic> <type> -> name.schem | name.json + 1 attribute
     private void onRegion(@NotNull CommandSender sender, @NotNull CommandContext context) {
         var schematic = context.get(schematicArgument);
         var type = context.get(roomArgument);

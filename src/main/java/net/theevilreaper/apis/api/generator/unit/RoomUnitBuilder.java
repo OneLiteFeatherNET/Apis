@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * @author theEvilReaper
  * @version 1.0.0
- * @since
+ * @since 1.0.0
  **/
 
 public non-sealed class RoomUnitBuilder implements RoomUnit.Builder {

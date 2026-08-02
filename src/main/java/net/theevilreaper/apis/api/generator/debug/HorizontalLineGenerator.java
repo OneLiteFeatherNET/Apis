@@ -57,7 +57,7 @@ public final class HorizontalLineGenerator extends BaseGenerator {
     @Override
     public void generate(@NotNull Point startPos) {
         Check.argCondition(instance == null, "The instance can't be null");
-        //Aktuelle Richtung für die Generation South und links unten hinstellen
+        // Current generation direction is south, starting from the bottom-left
         var startRoom = dtos.stream().filter(roomDTO -> roomDTO.roomData().type() == RoomType.START).findFirst().get();
 
         this.dtos.remove(startRoom);
@@ -67,7 +67,7 @@ public final class HorizontalLineGenerator extends BaseGenerator {
         int oldStartRoomZ = startPos.blockZ();
 
 
-        // SOUT x -> neagtive z ins Positive
+        // South: x -> negative z to positive
         for (int i = 0; i < this.dtos.size(); i++) {
             var currentRoom = this.dtos.get(i);
             generatorLogger.debug("Current room in queue is {}", currentRoom.roomData().type());

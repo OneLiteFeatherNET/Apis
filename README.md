@@ -3,7 +3,7 @@ The project is the Minestom implementation of the DungeonGenerator. This extensi
 python generator and generates the dungeon with some schematics.
 
 > [!NOTE]
-> The current state of the project is more **experminental** than **stable**.
+> The current state of the project is more **experimental** than **stable**.
 > It is not recommended to use this in production servers.
 
 # Limitations
