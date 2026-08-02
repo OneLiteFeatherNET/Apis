@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author theEvilReaper
@@ -45,6 +46,8 @@ public non-sealed class RoomUnitBuilder implements RoomUnit.Builder {
 
     @Override
     public @NotNull RoomUnit build() {
+        Objects.requireNonNull(this.schematicPath, "schematicPath cannot be null");
+        Objects.requireNonNull(this.originPoint, "originPoint cannot be null");
         return new RoomUnitImpl(this.schematicPath, this.originPoint, this.chunkMap);
     }
 }
