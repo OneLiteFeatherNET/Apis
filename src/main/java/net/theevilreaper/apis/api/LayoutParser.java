@@ -10,10 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import static net.theevilreaper.apis.api.util.Constants.ROOM_DOORS;
-import static net.theevilreaper.apis.api.util.Constants.ROOM_TYPE;
-import static net.theevilreaper.apis.api.util.Constants.ROOM_X;
-import static net.theevilreaper.apis.api.util.Constants.ROOM_Y;
+
 
 /**
  * The interface contains the main logic to parse a dungeon layout from a json file.
@@ -22,6 +19,15 @@ import static net.theevilreaper.apis.api.util.Constants.ROOM_Y;
  * @since 1.0.0
  **/
 public sealed interface LayoutParser permits DungeonGenerator {
+
+    String ROOM_ID = "_id";
+    String ROOM_X = "_x";
+    String ROOM_Y = "_y";
+    String ROOM_DOORS = "_doors";
+    String ROOM_TYPE = "_type";
+    String HEIGHT = "_height";
+    String WIDTH = "_width";
+    String FLOOR = "_floor";
 
     /**
      * The method parses the dungeon layout from the provided {@link JsonArray} into segments that the generator can utilize for the generation process.

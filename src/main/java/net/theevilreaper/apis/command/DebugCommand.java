@@ -25,7 +25,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import java.util.List;
 
-import static net.theevilreaper.apis.api.util.Constants.*;
+import static net.theevilreaper.apis.api.loader.RoomSchematicLoader.REGION_FILE;
+import static net.theevilreaper.apis.api.loader.RoomSchematicLoader.SCHEMATIC_FILE;
 
 /**
  * @author theEvilReaper

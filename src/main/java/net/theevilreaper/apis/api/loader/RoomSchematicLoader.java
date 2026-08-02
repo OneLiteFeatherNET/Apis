@@ -1,6 +1,6 @@
 package net.theevilreaper.apis.api.loader;
 
-import net.theevilreaper.apis.api.util.Constants;
+
 import net.theevilreaper.apis.api.data.RoomDTO;
 import net.theevilreaper.apis.api.data.RoomData;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +21,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static net.theevilreaper.apis.api.util.Constants.REGION_FILE;
-import static net.theevilreaper.apis.api.util.Constants.SCHEMATIC_FILE;
+
 
 /**
  * The class contains the main logic to load the schematic and region files for the dungeon generation from a given path.
@@ -32,6 +31,9 @@ import static net.theevilreaper.apis.api.util.Constants.SCHEMATIC_FILE;
  * @since 1.0.0
  **/
 public final class RoomSchematicLoader {
+
+    public static final String REGION_FILE = ".json";
+    public static final String SCHEMATIC_FILE = ".schem";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
@@ -47,7 +49,7 @@ public final class RoomSchematicLoader {
     }
 
     /**
-     * Search for all files in the folder which ends with {@link Constants#REGION_FILE}.
+     * Search for all files in the folder which ends with {@link RoomSchematicLoader#REGION_FILE}.
      *
      * @return the list which contains the files
      */
@@ -62,7 +64,7 @@ public final class RoomSchematicLoader {
     }
 
     /**
-     * Search for all files in the folder which ends with {@link Constants#SCHEMATIC_FILE}.
+     * Search for all files in the folder which ends with {@link RoomSchematicLoader#SCHEMATIC_FILE}.
      *
      * @return the list which contains the files
      */
