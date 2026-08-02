@@ -7,6 +7,8 @@ import net.minestom.server.coordinate.Point;
 import net.minestom.server.instance.Instance;
 import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +20,8 @@ import java.nio.file.Path;
  * @since 1.0.0
  **/
 public final class RoomSchematicPlacement {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomSchematicPlacement.class);
 
     private RoomSchematicPlacement() { }
 
@@ -38,7 +42,7 @@ public final class RoomSchematicPlacement {
             //TODO: Check if we should add a parameter for the callback
             schematic.createBatch(Rotation.NONE).apply(instance, position, null);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            LOGGER.error("Failed to place schematic from path: {}", schematicPath, exception);
         }
     }
 }

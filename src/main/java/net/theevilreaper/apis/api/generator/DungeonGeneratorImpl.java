@@ -47,7 +47,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
         this.dtos.clear();
         var regions = this.roomSchematicLoader.findRegions();
         if (regions.isEmpty()) {
-            throw new IllegalArgumentException("Found a floor which does not contains any schematics");
+            throw new IllegalArgumentException("Found a floor which does not contain any schematics");
         }
         var mapped = this.roomSchematicLoader.mapSchematicsByRegionsFiles(regions);
         for (RoomData roomDat : roomData) {
@@ -83,7 +83,7 @@ public final class DungeonGeneratorImpl extends BaseGenerator {
             }
 
             if (this.units.isEmpty()) {
-                throw new GeneratorGenerationException("Something wen't wrong during the chunk scanning!");
+                throw new GeneratorGenerationException("Something went wrong during the chunk scanning");
             }
             this.units.forEach(roomUnit -> this.chunkHandling.handleChunks(instance, roomUnit.chunks()));
         }

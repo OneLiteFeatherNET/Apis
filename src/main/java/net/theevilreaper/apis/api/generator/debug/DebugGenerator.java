@@ -33,7 +33,7 @@ public final class DebugGenerator extends BaseGenerator {
             int oldStartRoomX = -1;
             int oldStartRoomZ = -1;
             Pos playerPosition = startPos.asPos();
-            generatorLogger.info("New Start Room ({}, {})", playerPosition.chunkX(), playerPosition.chunkZ());
+            generatorLogger.debug("New Start Room ({}, {})", playerPosition.chunkX(), playerPosition.chunkZ());
             Chunk startChunk = instance.getChunk(playerPosition.chunkX(), playerPosition.chunkZ());
             buildRoom(startChunk.getChunkX(), startChunk.getChunkZ(), START_ROOM, playerPosition.blockY());
 
@@ -44,7 +44,7 @@ public final class DebugGenerator extends BaseGenerator {
                 }
             }
 
-            generatorLogger.info("Old Start Room ({}, {})", oldStartRoomX, oldStartRoomZ);
+            generatorLogger.debug("Old Start Room ({}, {})", oldStartRoomX, oldStartRoomZ);
 
             for (RoomData room : roomData) {
                 if (room.type() != RoomType.START) {
@@ -55,16 +55,16 @@ public final class DebugGenerator extends BaseGenerator {
                     chunkZ += (chunkZ - startChunk.getChunkZ()) * (roomScale - 1);
 
                     buildRoom(chunkX, chunkZ, getBlock(room), playerPosition.blockY());
-                    generatorLogger.info("ChunkX is {}", chunkX);
-                    generatorLogger.info("ChunkZ is {}", chunkZ);
+                    generatorLogger.debug("ChunkX is {}", chunkX);
+                    generatorLogger.debug("ChunkZ is {}", chunkZ);
                 }
             }
         }
-        generatorLogger.info("Finish");
+        generatorLogger.debug("Finished debug generation");
     }
 
     private void buildRoom(int chunkX, int chunkZ, Block block, int y) {
-        generatorLogger.info("chunkX: {}, chunkZ: {}", chunkX , chunkZ);
+        generatorLogger.debug("chunkX: {}, chunkZ: {}", chunkX, chunkZ);
         Chunk currentChunk;
 
         for (int xOffset = 0; xOffset <= (roomScale - 1); xOffset++) {

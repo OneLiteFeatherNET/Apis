@@ -20,23 +20,23 @@ class BaseGeneratorTest {
     private static final Stream<Arguments> INVALID_ARGUMENTS = Stream.of(
             Arguments.of(
                     "dungeon_failed_all.json",
-                    NullPointerException.class,
+                    IllegalStateException.class,
                     "The height attribute is missing"
             ),
             Arguments.of(
                     "dungeon_miss_width.json",
-                    NullPointerException.class,
+                    IllegalStateException.class,
                     "The width attribute is missing"
             ),
             Arguments.of(
                     "dungeon_miss_height.json",
-                    NullPointerException.class,
+                    IllegalStateException.class,
                     "The floor attribute is missing"
             ),
             Arguments.of(
                     "dungeon_miss_room.json",
                     IllegalArgumentException.class,
-                    "Only a boss rom can have zero doors"
+                    "Only a boss room can have zero doors"
             )
     );
 
@@ -62,8 +62,8 @@ class BaseGeneratorTest {
     @Test
     void testFailWithoutPath() {
         var generator = new DungeonGeneratorImpl(Paths.get("bla"), null);
-        var exception = assertThrows(NullPointerException.class, generator::loadData);
-        assertSame(NullPointerException.class, exception.getClass());
+        var exception = assertThrows(IllegalArgumentException.class, generator::loadData);
+        assertSame(IllegalArgumentException.class, exception.getClass());
         assertEquals("The given path does not exist", exception.getMessage());
     }
 }

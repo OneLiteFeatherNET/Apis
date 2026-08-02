@@ -39,11 +39,11 @@ public sealed interface LayoutParser permits DungeonGenerator {
             var doorArray = asJsonObject.get(ROOM_DOORS).getAsJsonArray();
 
             if (doorArray == null) {
-                throw new NullPointerException("A room must have at least one door");
+                throw new IllegalStateException("A room must have at least one door");
             }
 
             if (doorArray.isEmpty() && roomType != RoomType.BOSS) {
-                throw new IllegalArgumentException("Only a boss rom can have zero doors");
+                throw new IllegalArgumentException("Only a boss room can have zero doors");
             }
 
             var doors = new DoorFace[doorArray.size()];

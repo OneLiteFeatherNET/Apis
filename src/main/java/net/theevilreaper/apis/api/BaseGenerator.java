@@ -68,20 +68,20 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
     @Override
     public void loadData() {
         if (Files.notExists(filePath)) {
-            throw new NullPointerException("The given path does not exist");
+            throw new IllegalArgumentException("The given path does not exist");
         }
 
         try (var reader = new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8)) {
             JsonObject entry = GSON.fromJson(reader, JsonObject.class);
 
             if (!entry.has(HEIGHT)) {
-                throw new NullPointerException("The height attribute is missing");
+                throw new IllegalStateException("The height attribute is missing");
             }
 
             var height = entry.get(HEIGHT).getAsInt();
 
             if (!entry.has(WIDTH)) {
-                throw new NullPointerException("The width attribute is missing");
+                throw new IllegalStateException("The width attribute is missing");
             }
 
             var width = entry.get(WIDTH).getAsInt();
@@ -89,22 +89,22 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
             this.floorPlan = new RoomData[height][width];
 
             if (!entry.has(FLOOR)) {
-                throw new NullPointerException("The floor attribute is missing");
+                throw new IllegalStateException("The floor attribute is missing");
             }
 
             var floor = entry.getAsJsonArray(FLOOR);
 
             if (floor == null || floor.isEmpty()) {
-                throw new NullPointerException("The floor can not be empty");
+                throw new IllegalStateException("The floor can not be empty");
             }
 
             try {
                 this.parseLayout(floor, this.roomData, this.floorPlan);
             } catch (RoomTypeNotFoundException roomTypeNotFound) {
-                generatorLogger.warn("An exception occurred while loading floor plan", roomTypeNotFound);
+                generatorLogger.warn("Unknown room type encountered while loading floor plan", roomTypeNotFound);
             }
         } catch (IOException exception) {
-            generatorLogger.warn("An exception occurred while loading floor plan", exception);
+            generatorLogger.error("Failed to read floor plan from file: {}", filePath, exception);
         }
     }
 

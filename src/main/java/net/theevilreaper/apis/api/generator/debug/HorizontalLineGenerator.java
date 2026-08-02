@@ -33,7 +33,7 @@ public final class HorizontalLineGenerator extends BaseGenerator {
         super("Line",  filePath);
         this.roomSchematicLoader = roomSchematicLoader;
         this.dtos = new ArrayList<>();
-        generatorLogger = LoggerFactory.getLogger(DungeonGeneratorImpl.class);
+        generatorLogger = LoggerFactory.getLogger(HorizontalLineGenerator.class);
     }
 
     @Override
@@ -42,7 +42,7 @@ public final class HorizontalLineGenerator extends BaseGenerator {
         this.dtos.clear();
         var regions = this.roomSchematicLoader.findRegions();
         if (regions.isEmpty()) {
-            throw new IllegalArgumentException("Found a floor which does not contains any schematics");
+            throw new IllegalArgumentException("Found a floor which does not contain any schematics");
         }
         var mapped = this.roomSchematicLoader.mapSchematicsByRegionsFiles(regions);
         for (RoomData roomDat : roomData) {

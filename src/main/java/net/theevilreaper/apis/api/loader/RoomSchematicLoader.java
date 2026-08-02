@@ -33,7 +33,7 @@ import static net.theevilreaper.apis.api.util.Constants.SCHEMATIC_FILE;
  **/
 public final class RoomSchematicLoader {
 
-    private static final Logger SCHEMATIC_LOADER_LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RoomSchematicLoader.class);
     private static final Pattern SPLIT_PATTERN = Pattern.compile("\\.");
     private final Path basePath;
 
@@ -56,7 +56,7 @@ public final class RoomSchematicLoader {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isRegionFile).toList();
         } catch (IOException exception) {
-            SCHEMATIC_LOADER_LOGGER.warn("Unable to locate region files ", exception);
+            LOGGER.warn("Unable to locate region files", exception);
         }
         return Collections.emptyList();
     }
@@ -70,7 +70,7 @@ public final class RoomSchematicLoader {
         try (Stream<Path> stream = Files.walk(basePath)) {
             return stream.filter(Files::isRegularFile).filter(this::isSchematicFile).toList();
         } catch (IOException exception) {
-            SCHEMATIC_LOADER_LOGGER.warn("Unable to locate schematic files ", exception);
+            LOGGER.warn("Unable to locate schematic files", exception);
         }
         return Collections.emptyList();
     }
