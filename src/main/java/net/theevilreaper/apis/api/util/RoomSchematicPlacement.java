@@ -35,9 +35,8 @@ public final class RoomSchematicPlacement {
      * @throws NullPointerException if instance, position, or schematicPath is null.
      */
     public static void placeRoom(@NotNull Instance instance, @NotNull Point position, @NotNull Path schematicPath) {
-        byte[] schematicContent = null;
         try {
-            schematicContent = Files.readAllBytes(schematicPath);
+            byte[] schematicContent = Files.readAllBytes(schematicPath);
             Schematic schematic = SchematicReader.detecting().read(schematicContent);
             //TODO: Check if we should add a parameter for the callback
             schematic.createBatch(Rotation.NONE).apply(instance, position, null);
