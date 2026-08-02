@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import net.minestom.server.instance.Instance;
 import net.minestom.server.utils.validate.Check;
 import net.theevilreaper.apis.api.data.RoomData;
-import net.theevilreaper.apis.api.generator.exception.RoomTypeNotFoundException;
 import net.theevilreaper.apis.api.generator.functional.ChunkHandling;
 import net.theevilreaper.apis.api.generator.functional.OriginPointPartCalculation;
 import net.theevilreaper.apis.api.generator.functional.SchematicPlacement;
@@ -98,11 +97,7 @@ public abstract non-sealed class BaseGenerator implements DungeonGenerator {
                 throw new IllegalStateException("The floor can not be empty");
             }
 
-            try {
-                this.parseLayout(floor, this.roomData, this.floorPlan);
-            } catch (RoomTypeNotFoundException roomTypeNotFound) {
-                generatorLogger.warn("Unknown room type encountered while loading floor plan", roomTypeNotFound);
-            }
+            this.parseLayout(floor, this.roomData, this.floorPlan);
         } catch (IOException exception) {
             generatorLogger.error("Failed to read floor plan from file: {}", filePath, exception);
         }

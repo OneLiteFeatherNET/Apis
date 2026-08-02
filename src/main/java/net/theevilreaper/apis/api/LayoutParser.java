@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import net.theevilreaper.apis.api.data.DoorFace;
 import net.theevilreaper.apis.api.data.RoomData;
 import net.theevilreaper.apis.api.data.RoomType;
-import net.theevilreaper.apis.api.generator.exception.RoomTypeNotFoundException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public sealed interface LayoutParser permits DungeonGenerator {
      * @param roomData a {@link List} which contains all data about rooms
      * @param floorPlan the plan which represents the later the parsed floor as 2D array
      */
-    default void parseLayout(@NotNull JsonArray floor, @NotNull List<RoomData> roomData, RoomData[][] floorPlan) throws RoomTypeNotFoundException {
+    default void parseLayout(@NotNull JsonArray floor, @NotNull List<RoomData> roomData, RoomData[][] floorPlan) {
         for (JsonElement jsonElement : floor) {
             JsonObject asJsonObject = jsonElement.getAsJsonObject();
             var x = asJsonObject.get(ROOM_X).getAsInt();
