@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings({"java:S3252"})
 public final class DebugGenerator extends BaseGenerator {
@@ -66,17 +69,22 @@ public final class DebugGenerator extends BaseGenerator {
     private void buildRoom(int chunkX, int chunkZ, Block block, int y) {
         generatorLogger.debug("chunkX: {}, chunkZ: {}", chunkX, chunkZ);
         Chunk currentChunk;
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
 
         for (int xOffset = 0; xOffset <= (roomScale - 1); xOffset++) {
             for (int zOffset = 0; zOffset <= (roomScale - 1); zOffset++) {
                 currentChunk = instance.getChunk(chunkX + xOffset, chunkZ + zOffset);
                 if (currentChunk == null || !currentChunk.isLoaded()) {
-                    instance.loadChunk(chunkX + xOffset, chunkZ + zOffset)
-                            .thenAccept(chunk -> this.createChunkBatch(chunk, block, y)).join();
+                    futures.add(instance.loadChunk(chunkX + xOffset, chunkZ + zOffset)
+                            .thenAccept(chunk -> this.createChunkBatch(chunk, block, y)));
                 } else {
                     this.createChunkBatch(currentChunk, block, y);
                 }
             }
+        }
+        
+        if (!futures.isEmpty()) {
+            CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
         }
     }
 
@@ -97,21 +105,12 @@ public final class DebugGenerator extends BaseGenerator {
     }
 
     private Block getBlock(@NotNull RoomData loadedRoom) {
-        if (loadedRoom.isStart()) {
-            return START_ROOM;
-        }
-
-        if (loadedRoom.isBoss()) {
-            return BOSS_ROOM;
-        }
-
-        if (loadedRoom.isShop()) {
-            return SHOP_ROOM;
-        }
-
-        if (loadedRoom.isItem()) {
-            return ITEM_ROOM;
-        }
-        return NORMAL_ROOM;
+        return switch (loadedRoom.type()) {
+            case START -> START_ROOM;
+            case BOSS -> BOSS_ROOM;
+            case SHOP -> SHOP_ROOM;
+            case ITEM -> ITEM_ROOM;
+            default -> NORMAL_ROOM;
+        };
     }
 }
