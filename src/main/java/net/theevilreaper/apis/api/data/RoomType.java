@@ -47,7 +47,7 @@ public enum RoomType {
      * @return the given type if it exists, NORMAL_ROOM otherwise
      */
     public static @NotNull RoomType getRoomType(int id) throws RoomTypeNotFoundException {
-        if (id < 0 || id > values.length) throw new RoomTypeNotFoundException("The room type with the id " + id + " does not exist");
+        if (id < 0 || id >= values.length) throw new RoomTypeNotFoundException("The room type with the id " + id + " does not exist");
         return values[id];
     }
 }
