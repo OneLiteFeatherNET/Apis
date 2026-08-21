@@ -1,11 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
-  ],
-  "rebaseWhen": "conflicted",
-  "labels": [
-    "Renovate"
+    "github>OneLiteFeatherNET/renovate:default(OneLiteFeatherNET/apis-maintainers)",
+    "github>OneLiteFeatherNET/renovate:minestom"
   ],
   "packageRules": [
     {
