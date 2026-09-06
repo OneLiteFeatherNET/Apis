@@ -23,7 +23,7 @@ dependencyResolutionManagement {
         create("libs") {
             version("schem", "2.0.1")
             version("bom", "1.8.2")
-            version("slf4j", "2.0.18")
+            version("slf4j", "2.0.19")
 
             library("bom.base", "net.onelitefeather", "mycelium-bom").versionRef("bom")
             library("slf4j.api", "org.slf4j", "slf4j-api").versionRef("slf4j")
